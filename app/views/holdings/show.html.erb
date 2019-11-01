@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @holding.user_id %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @holding.company_id %>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @holding.quantity %>
+</p>
+
+<%= link_to 'Edit', edit_holding_path(@holding) %> |
+<%= link_to 'Back', holdings_path %>
