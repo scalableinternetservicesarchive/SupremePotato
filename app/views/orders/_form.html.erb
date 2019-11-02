@@ -12,8 +12,11 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :type %>
-    <%= form.check_box :type %>
+    <%= form.label :order_type %>
+    <%#= form.number_field :order_type %>
+    <%= form.select :order_type, {Buy: Order::BUY, Sell: Order::SELL} %>
+
+
   </div>
 
   <div class="field">
@@ -23,12 +26,12 @@
 
   <div class="field">
     <%= form.label :company_id %>
-    <%= form.number_field :company_id %>
+    <%= form.collection_select(:company_id, Company.all, :id, :name) %>
   </div>
 
   <div class="field">
     <%= form.label :user_id %>
-    <%= form.number_field :user_id %>
+    <%= form.collection_select(:user_id, User.all, :id, :name) %>
   </div>
 
   <div class="field">
