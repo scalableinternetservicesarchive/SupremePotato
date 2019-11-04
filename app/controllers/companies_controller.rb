@@ -4,7 +4,7 @@ class CompaniesController < ApplicationController
   # GET /companies
   # GET /companies.json
   def index
-    @companies = Company.all
+    @companies = Company.includes(:trades)
   end
 
   # GET /companies/1
@@ -12,9 +12,7 @@ class CompaniesController < ApplicationController
   def show
     @trades = Trade.where(
             company_id: params[:id],
-          ).order(
-            'updated_at DESC'
-          )
+          ).order('updated_at DESC')
   end
 
   # GET /companies/new
