@@ -10,6 +10,11 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   # GET /companies/1.json
   def show
+    @trades = Trade.where(
+            company_id: params[:id],
+          ).order(
+            'updated_at DESC'
+          )
   end
 
   # GET /companies/new
