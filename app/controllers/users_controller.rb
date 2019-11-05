@@ -10,6 +10,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    @holdings = Holding.where(
+      user_id: params[:id],
+    ).order('updated_at DESC')
   end
 
   # GET /users/new
