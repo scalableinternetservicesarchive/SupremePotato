@@ -25,9 +25,58 @@ class OrdersController < ApplicationController
   # POST /orders.json
   def create
     @order = Order.new(order_params)
+    @order.status = Order::PENDING
 
     respond_to do |format|
       if @order.save
+        if @order.order_type == Order::BUY
+          matching = Order.where(
+            company_id: @order.company_id,
+            order_type: Order::SELL,
+            status:     Order::PENDING
+          ).where(
+            "price <= ?", @order.price
+          ).order(
+            'price DESC'
+          ).first
+          
+          if matching
+            trade = Trade.new(
+              buy_order:  @order, 
+              sell_order: matching,
+              price:      matching.price,
+              company_id: @order.company_id
+            )
+            if trade.save
+              @order.update_attributes(:status => Order::COMPLETED)
+              matching.update_attributes(:status => Order::COMPLETED)
+            end
+          end
+        else
+          matching = Order.where(
+            company_id: @order.company_id,
+            order_type: Order::BUY,
+            status:     Order::PENDING
+          ).where(
+            "price >= ?", @order.price
+          ).order(
+            'price ASC'
+          ).first
+          
+          if matching
+            trade = Trade.new(
+              buy_order:  matching, 
+              sell_order: @order,
+              price:      matching.price,
+              company_id: @order.company_id
+            )
+            if trade.save
+              @order.update_attributes(:status => Order::COMPLETED)
+              matching.update_attributes(:status => Order::COMPLETED)
+            end
+          end
+        end
+
         format.html { redirect_to @order, notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
       else
@@ -69,6 +118,6 @@ class OrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
-      params.require(:order).permit(:type, :price, :company_id, :user_id, :status)
+      params.require(:order).permit(:order_type, :price, :company_id, :user_id)
     end
 end

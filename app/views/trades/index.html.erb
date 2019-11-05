@@ -16,12 +16,11 @@
   <tbody>
     <% @trades.each do |trade| %>
       <tr>
-        <td><%= trade.buy_id %></td>
-        <td><%= trade.sell_id %></td>
+        <td><%= trade.buy_order_id %></td>
+        <td><%= trade.sell_order_id %></td>
         <td><%= trade.company_id %></td>
         <td><%= trade.price %></td>
         <td><%= link_to 'Show', trade %></td>
-        <td><%= link_to 'Edit', edit_trade_path(trade) %></td>
         <td><%= link_to 'Destroy', trade, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
@@ -29,5 +28,3 @@
 </table>
 
 <br>
-
-<%= link_to 'New Trade', new_trade_path %>

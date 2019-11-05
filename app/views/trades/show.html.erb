@@ -2,12 +2,12 @@
 
 <p>
   <strong>Buy:</strong>
-  <%= @trade.buy_id %>
+  <%= @trade.buy_order_id %>
 </p>
 
 <p>
   <strong>Sell:</strong>
-  <%= @trade.sell_id %>
+  <%= @trade.sell_order_id %>
 </p>
 
 <p>
@@ -20,5 +20,4 @@
   <%= @trade.price %>
 </p>
 
-<%= link_to 'Edit', edit_trade_path(@trade) %> |
 <%= link_to 'Back', trades_path %>
