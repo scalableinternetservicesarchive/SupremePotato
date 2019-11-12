@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Banking</h1>
+
+<%= form_with(url: deposits_path, local: true) do |form| %>
+
+  <% if @errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @errors.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <div class="field">
+      <%= form.label :user_name %>
+      <%= form.text_field :user_name %>
+    </div>
+
+    <div class="field">
+      <%= form.label "From" %>
+      <%= form.select :from, options_for_select([['Your Bank'], ['Trading Account']]) %>
+    </div>
+
+    <div class="field">
+      <%= form.label "To" %>
+      <%= form.select :to, options_for_select([['Trading Account'], ['Your Bank']]) %>
+    </div>
+
+    <div class="field">
+      <%= form.label "Amount" %>
+      <%= form.number_field :amount %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+
+<% end %>

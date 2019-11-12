@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'deposits' => 'deposits#index'
+  post 'deposits' => 'deposits#deposit'
   resources :holdings
   resources :trades
   resources :orders
