@@ -1,24 +1,33 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Holdings</h1>
+<h1>Portfolio</h1>
 
+<h3>Total Portfolio Worth</h3>
+
+<h3>Stocks</h3>
 <table>
   <thead>
     <tr>
-      <th>User</th>
-      <th>Company</th>
-      <th>Quantity</th>
-      <th colspan="1"></th>
+      <th>Name</th>
+      <th>Symbol</th>
+      <th>Shares</th>
+      <th>Current Price</th>
+      <th>Average Cost</th>
+      <th>Total Return</th>
+      <th>Equity</th>
     </tr>
   </thead>
 
   <tbody>
     <% @holdings.each do |holding| %>
       <tr>
-        <td><%= holding.user_id %></td>
-        <td><%= holding.company_id %></td>
+        <td><%= holding.company_name %></td>
+        <td><%= holding.company_ticker %></td>
         <td><%= holding.quantity %></td>
-        <td><%= link_to 'Show', holding %></td>
+        <td>$100.00</td>
+        <td>$10.00</td>
+        <td>$90.00</td>
+        <td>$<%= holding.quantity * 100.00 %></td>
       </tr>
     <% end %>
   </tbody>
