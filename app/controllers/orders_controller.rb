@@ -39,20 +39,41 @@ class OrdersController < ApplicationController
           ).order(
             'price DESC'
           ).first
-          
+
           if matching
             trade = Trade.new(
-              buy_order:  @order, 
+              buy_order:  @order,
               sell_order: matching,
               price:      matching.price,
               company_id: @order.company_id
             )
-            if trade.save
+
+            # TODO: Be able to purchase / sell more than 1 share at a time
+            buyer_holding = Holding.where(
+              user_id:    @order.user_id,
+              company_id: @order.company_id
+            ).first_or_create
+            buyer_holding.quantity += 1
+
+            seller_holding = Holding.where(
+              company_id: @order.company_id,
+              user_id: matching.user_id,
+            ).first
+            seller_holding.quantity -= 1
+
+            if seller_holding.quantity == 0
+              seller_holding.destroy
+            else
+              seller_holding.save
+            end
+
+            if trade.save && buyer_holding.save
               @order.update_attributes(:status => Order::COMPLETED)
               matching.update_attributes(:status => Order::COMPLETED)
             end
           end
         else
+          # Sell Order
           matching = Order.where(
             company_id: @order.company_id,
             order_type: Order::BUY,
@@ -62,14 +83,34 @@ class OrdersController < ApplicationController
           ).order(
             'price ASC'
           ).first
-          
+
           if matching
             trade = Trade.new(
-              buy_order:  matching, 
+              buy_order:  matching,
               sell_order: @order,
               price:      matching.price,
               company_id: @order.company_id
             )
+
+            # TODO: Be able to purchase / sell more than 1 share at a time
+            buyer_holding = Holding.where(
+              user_id:    @order.user_id,
+              company_id: @order.company_id
+            ).first_or_create
+            buyer_holding.quantity += 1
+
+            seller_holding = Holding.where(
+              company_id: @order.company_id,
+              user_id: matching.user_id,
+            ).first
+            seller_holding.quantity -= 1
+
+            if seller_holding.quantity == 0
+              seller_holding.destroy
+            else
+              seller_holding.save
+            end
+
             if trade.save
               @order.update_attributes(:status => Order::COMPLETED)
               matching.update_attributes(:status => Order::COMPLETED)
