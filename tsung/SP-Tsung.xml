@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
-<tsung loglevel="notice">
+<tsung loglevel="debug">
 
   <!-- Client side setup -->
   <clients>
@@ -28,16 +28,20 @@
 
   <sessions>
     <!-- Section 1: Companies related! --> 
-    <session name="Create Company" probability="100" type="ts_http">
-      <request>
-        <http url='/companies'></http>
-      </request>
+    <session name="Company" probability="100" type="ts_http">
+      
+      <transaction name="show_companies_index">
+        <request>
+          <http url='/companies'></http>
+        </request>
+      </transaction>
 
-      <!-- POST New Company! --> 
-      <request>
-        <dyn_variable name="authenticity_token"/>
-        <http url='/companies/new'></http>
-      </request>
+      <transaction name="show_company_new">
+        <request>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/companies/new'></http>
+        </request>
+      </transaction>
 
       <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
         <var name="authenticity_token"/>
@@ -53,16 +57,42 @@
         <var name="rndstring" />
       </setdynvars>
 
-      <request subst="true">
-        <dyn_variable name="created_company_id" re="Location: http://.*/companies/(.*)\r"/>
-        <http url='/companies' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;company%5Bname%5D=%%_rndstring%%&amp;company%5Bticker%5D=%%_rndstring%%&amp;company%5Bshares%5D=%%_share%%"></http>
-      </request>
+      <transaction name="post_company">
+        <request subst="true">
+          <dyn_variable name="created_company_id" re="Location: http://.*/companies/(.*)\r"/>
+          <http url='/companies' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;company%5Bname%5D=%%_rndstring%%&amp;company%5Bticker%5D=%%_rndstring%%&amp;company%5Bshares%5D=%%_share%%"></http>
+        </request>
+      </transaction>
 
-      <request subst="true">
-        <http url='/companies/%%_created_company_id%%'></http>
-      </request>
+      <transaction name="view_company_id">
+        <request subst="true">
+          <http url='/companies/%%_created_company_id%%'></http>
+        </request>
+      </transaction>
 
-      <!-- Should We Destory Company? --> 
+      <transaction name="show_companies_index2">
+        <request>
+          <!--Ehhhh so hopeless to obtain the token...-->
+          <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+          <http url='/companies'></http>
+        </request>
+
+        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+          <var name="authenticity_token"/>
+        </setdynvars> 
+      </transaction>
+
+      <thinktime random='true' value='1'/>
+
+      <transaction name="delete_company_id">
+        <request subst="true">
+          <http 
+            url='/companies/%%_created_company_id%%' 
+            method='POST' 
+            contents="_method=delete&amp;authenticity_token=%%_authenticity_token%%"></http>
+        </request>
+      </transaction>
+    
 
     </session>
 
