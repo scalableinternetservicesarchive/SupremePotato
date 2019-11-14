@@ -33,6 +33,7 @@
       <users arrivalrate="16" unit="second"></users>
     </arrivalphase>
 
+    <!--
     <arrivalphase phase="6" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="32" unit="second"></users>
     </arrivalphase>
@@ -48,6 +49,8 @@
     <arrivalphase phase="9" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="256" unit="second"></users>
     </arrivalphase>
+    -->
+     
   </load>
 
   <options>
