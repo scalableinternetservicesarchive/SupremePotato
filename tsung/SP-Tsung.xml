@@ -20,6 +20,34 @@
     <arrivalphase phase="2" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="2" unit="second"></users>
     </arrivalphase>
+
+    <arrivalphase phase="3" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="4" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="4" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="8" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="5" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="16" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="6" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="32" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="7" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="64" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="8" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="128" unit="second"></users>
+    </arrivalphase>
+
+    <arrivalphase phase="9" duration="30" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="256" unit="second"></users>
+    </arrivalphase>
   </load>
 
   <options>
