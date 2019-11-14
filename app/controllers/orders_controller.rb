@@ -7,9 +7,9 @@ class OrdersController < ApplicationController
     vars = request.query_parameters # Potentially allows us to filter orders based on user_id 
     if(vars['user_id'])
       @user_id = vars['user_id']
-      @orders = Order.where(user_id: vars['user_id']).includes(:company).includes(:user)
+      @orders = Order.where(user_id: vars['user_id']).includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
     else
-      @orders = Order.all.order('id DESC').includes(:company).includes(:user)
+      @orders = Order.all.order('id DESC').includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
     end
   end
 
