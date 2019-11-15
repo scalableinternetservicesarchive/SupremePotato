@@ -20,18 +20,12 @@
         <td><%= company.ticker %></td>
         <td><%= company.shares %></td>
         <td>
-          <%= 
+          <%=
             company.trades.order('updated_at DESC').first ? company.trades.order('updated_at DESC').first.price : "UNKNOWN"
           %>
         </td>
         <td><%= link_to 'Show', company %></td>
-        <td><%= link_to 'Edit', edit_company_path(company) %></td>
-        <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Company', new_company_path %>
