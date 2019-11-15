@@ -1,44 +1,27 @@
 class DepositsController < ApplicationController
   def index
-    @errors = []
+    @deposits = Deposit.all
   end
 
-  def deposit
-    # TODO: Form validation (empty params, string value for amount, etc)
-    @errors = []
-    @user = User.where(:name => params[:user_name]).first
-    if @user.nil?
-      @errors.push "User name not found."
-    else
-      new_balance = @user.balance
-      amount = params[:amount].to_i
-      if params[:from] == 'Your Bank' && params[:to] == 'Trading Account'
-        new_balance += amount
-      elsif params[:from] == 'Trading Account' && params[:to] == 'Your Bank'
-        if @user.balance >= amount
-          new_balance -= amount
-        else
-          @errors.push "Can't withdraw more than account balance."
-        end
-      else
-        @errors.push 'Invalid to/from account.'
-      end
-    end
-
-    respond_to do |format|
-      if @errors.empty?
-        if @user.update(:balance => new_balance)
-          format.html { redirect_to @user, notice: 'Transfer was successful!' }
-          format.json { render :show, status: :created, location: @user }
-        else
-          @errors.push "Failed to save record."
-        end
-      end
-
-      if @errors.any?
-        format.html { render :index}
-        format.json { render json: @errors, status: :unprocessable_entity }
-      end
-    end
+  def new
+    @deposit = Deposit.new
   end
+
+  def create
+    @deposit = Deposit.new(deposit_params)
+    @deposit.user_id = params[:user_id] # set user_id since can't be provided
+    if @deposit.valid?
+      @deposit.user.balance += @deposit.amount
+      if @deposit.user.save && @deposit.save
+        redirect_to @deposit.user, notice: 'Transfer was successful!' and return
+      end
+    end
+    render :new
+  end
+
+  private
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def deposit_params
+      params.require(:deposit).permit(:amount)
+    end
 end

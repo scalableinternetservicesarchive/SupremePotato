@@ -1,43 +1,25 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Banking</h1>
+<h1>Banking History</h1>
 
-<%= form_with(url: deposits_path, local: true) do |form| %>
+<%= link_to 'New Deposit/Withdrawal', new_user_deposit_path(params[:user_id]) %>
 
-  <% if @errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@errors.count, "error") %> prohibited this user from being saved:</h2>
+<br><br>
 
-      <ul>
-      <% @errors.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<table>
+  <thead>
+    <tr>
+      <th>Transaction Amount</th>
+      <th>Date</th>
+    </tr>
+  </thead>
 
-    <div class="field">
-      <%= form.label :user_name %>
-      <%= form.text_field :user_name %>
-    </div>
-
-    <div class="field">
-      <%= form.label "From" %>
-      <%= form.select :from, options_for_select([['Your Bank'], ['Trading Account']]) %>
-    </div>
-
-    <div class="field">
-      <%= form.label "To" %>
-      <%= form.select :to, options_for_select([['Trading Account'], ['Your Bank']]) %>
-    </div>
-
-    <div class="field">
-      <%= form.label "Amount" %>
-      <%= form.number_field :amount %>
-    </div>
-
-    <div class="actions">
-      <%= form.submit %>
-    </div>
-
-<% end %>
+  <tbody>
+    <% @deposits.each do |deposit| %>
+      <tr>
+        <td>$<%= deposit.amount %>.00</td>
+        <td><%= deposit.updated_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
