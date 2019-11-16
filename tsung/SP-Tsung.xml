@@ -50,7 +50,7 @@
       <users arrivalrate="256" unit="second"></users>
     </arrivalphase>
     -->
-     
+
   </load>
 
   <options>
@@ -58,129 +58,156 @@
   </options>
 
   <sessions>
-    <!-- Section 1: Companies related! --> 
-    <session name="Company" probability="100" type="ts_http">
-      
-      <transaction name="show_companies_index">
+    <session name="View Company" probability="20" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="company_id" />
+      </setdynvars>
+
+      <transaction name="companies">
         <request>
           <http url='/companies'></http>
         </request>
       </transaction>
 
-      <transaction name="show_company_new">
+      <transaction name="view_company">
+        <request subst="true">
+          <http url='/companies/%%_company_id%%'></http>
+        </request>
+      </transaction>
+    </session>
+
+
+    <session name="Create User" probability="20" type="ts_http">
+      <transaction name="users_index">
+        <request>
+          <http url='/users'></http>
+        </request>
+      </transaction>
+
+      <transaction name="new_user">
         <request>
           <dyn_variable name="authenticity_token"/>
-          <http url='/companies/new'></http>
+          <http url='/users/new'></http>
         </request>
       </transaction>
 
       <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
         <var name="authenticity_token"/>
-      </setdynvars> 
-
-      <thinktime random="true" value="4"/> 
-      
-      <setdynvars sourcetype="random_number" start="1" end="100">
-        <var name="share"/>
       </setdynvars>
+
+      <thinktime random="true" value="4"/>
 
       <setdynvars sourcetype="random_string" length="5">
         <var name="rndstring" />
       </setdynvars>
 
-      <transaction name="post_company">
+      <transaction name="create_user">
         <request subst="true">
-          <dyn_variable name="created_company_id" re="Location: http://.*/companies/(.*)\r"/>
-          <http url='/companies' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;company%5Bname%5D=%%_rndstring%%&amp;company%5Bticker%5D=%%_rndstring%%&amp;company%5Bshares%5D=%%_share%%"></http>
+          <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
+          <http url='/users' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=User %%_rndstring%%"></http>
         </request>
       </transaction>
 
-      <transaction name="view_company_id">
+      <transaction name="view_user">
         <request subst="true">
-          <http url='/companies/%%_created_company_id%%'></http>
+          <http url='/users/%%_user_id%%'></http>
         </request>
       </transaction>
-
-      <transaction name="show_companies_index2">
-        <request>
-          <!--Ehhhh so hopeless to obtain the token...-->
-          <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
-          <http url='/companies'></http>
-        </request>
-
-        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
-          <var name="authenticity_token"/>
-        </setdynvars> 
-      </transaction>
-
-      <thinktime random='true' value='1'/>
-
-      <transaction name="delete_company_id">
-        <request subst="true">
-          <http 
-            url='/companies/%%_created_company_id%%' 
-            method='POST' 
-            contents="_method=delete&amp;authenticity_token=%%_authenticity_token%%"></http>
-        </request>
-      </transaction>
-    
-
     </session>
 
 
-    <!-- Section 2: Users related! --> 
-    <!--
-    <session name="Create User" probability="40" type="ts_http">
-      <request>
-        <http url='/users'></http>
-      </request>
+    <session name="View User Info" probability="20" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="user_id" />
+      </setdynvars>
 
-      <request>
-        <dyn_variable name="authenticity_token"/>
-        <http url='/users/new'></http>
-      </request>
+      <transaction name="view_user">
+        <request subst="true">
+          <http url='/users/%%_user_id%%'></http>
+        </request>
+      </transaction>
+
+      <transaction name="view_trades">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/trades'></http>
+        </request>
+      </transaction>
+    </session>
+
+
+    <session name="Make Deposit" probability="20" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="user_id" />
+      </setdynvars>
+
+      <setdynvars sourcetype="random_number" start="-100" end="100">
+        <var name="amount" />
+      </setdynvars>
+
+      <transaction name="new_deposit">
+        <request subst="true">
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/%%_user_id%%/deposits/new'></http>
+        </request>
+      </transaction>
 
       <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
         <var name="authenticity_token"/>
-      </setdynvars> 
-
-      <thinktime random="true" value="4"/> 
-      
-      <setdynvars sourcetype="random_string" length="13">
-        <var name="rndstring" />
       </setdynvars>
 
-      <setdynvars sourcetype="random_random_number" start="10" end="10000000">
-        <var name="rndnum" />
+      <transaction name="create_deposit">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/deposits' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;deposit%5Bamount%5D=%%amount%%"></http>
+        </request>
+      </transaction>
+
+      <transaction name="deposits">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/deposits'></http>
+        </request>
+      </transaction>
+    </session>
+
+
+    <session name="Place Order" probability="20" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="user_id" />
       </setdynvars>
 
-      <request subst="true">
-        <dyn_variable name="created_user_id" re="Location: http://.*/users/(.*)\r"/>
-        <http url='/users' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_rndstring%%&amp;user%5Bbalance%5D=%%_rndnum%%"></http>
-      </request>
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="company_id" />
+      </setdynvars>
 
-      <request subst="true">
-        <http url='/users/%%_created_user_id%%'></http>
-      </request>
+      <setdynvars sourcetype="random_number" start="90" end="110">
+        <var name="price" />
+      </setdynvars>
+
+      <setdynvars sourcetype="random_number" start="1" end="2">
+        <var name="type" />
+      </setdynvars>
+
+      <transaction name="new_order">
+        <request subst="true">
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/%%_user_id%%/orders/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <transaction name="create_order">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/order' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=%%_type%%"></http>
+        </request>
+      </transaction>
+
+      <transaction name="orders">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/orders'></http>
+        </request>
+      </transaction>
     </session>
-
-    -->
-
-    <!-- Section 3: Orders related! --> 
-    <!-- 
-    <session name="View Trades" probability="10" type="ts_http">
-      <request>
-        <http url='/trades'></http>
-      </request>
-
-      <thinktime random="true" value="4"/> 
-      
-      <request>
-        <http url='/trades'></http>
-      </request>
-      
-    </session>
-    -->
-
   </sessions>
 </tsung>
