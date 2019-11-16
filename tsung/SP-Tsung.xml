@@ -178,7 +178,7 @@
         <var name="company_id" />
       </setdynvars>
 
-      <setdynvars sourcetype="random_number" start="90" end="110">
+      <setdynvars sourcetype="random_number" start="100" end="200">
         <var name="price" />
       </setdynvars>
 
