@@ -9,7 +9,8 @@
       <th>Ticker</th>
       <th>Shares</th>
       <th>Current Price</th>
-      <th colspan="1"></th>
+      <th>Trades</th>
+      <th>Orders</th>
     </tr>
   </thead>
 
@@ -22,7 +23,8 @@
         <td>$<%= number_to_currency(
           company.trades.order('updated_at DESC').first ? company.trades.order('updated_at DESC').first.price : "-1.00", delimiter: '', unit: '') %>
         </td>
-        <td><%= link_to 'Show', company %></td>
+        <td><%= link_to 'Trades', company %></td>
+        <td><%= link_to 'Orders', company %></td>
       </tr>
     <% end %>
   </tbody>

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @holdings = Holding.where(user_id: params[:user_id]).includes(:company).order('updated_at DESC')
+    @holdings = Holding.where(user_id: params[:id]).includes(:company).order('updated_at DESC')
   end
 
   def new

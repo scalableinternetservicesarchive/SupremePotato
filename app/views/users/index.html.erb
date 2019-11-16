@@ -9,7 +9,8 @@
       <th>User ID</th>
       <th>Name</th>
       <th>Balance</th>
-      <th colspan="1"></th>
+      <th>Portfolio</th>
+      <th>Orders</th>
     </tr>
   </thead>
 
@@ -19,7 +20,8 @@
         <td><%= user.id %></td>
         <td><%= user.name %></td>
         <td>$<%= number_to_currency(user.balance, delimiter: '', unit: '') %></td>
-        <td><%= link_to 'Show Orders', orders_path(user_id: user.id) %></td>
+        <td><%= link_to 'Portfolio', user_path(user.id) %></td>
+        <td><%= link_to 'Show Orders', orders_path(user.id) %></td>
       </tr>
     <% end %>
   </tbody>

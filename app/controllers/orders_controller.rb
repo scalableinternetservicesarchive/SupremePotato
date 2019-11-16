@@ -23,9 +23,13 @@ class OrdersController < ApplicationController
     ActiveRecord::Base.transaction do
       @order = Order.new(order_params)
       @order.status = Order::PENDING
-      @order.save
+      @order.save!
 
       if @order.order_type == Order::BUY
+        # Withhold balance
+        @order.user.balance -= @order.price
+        @order.user.save!
+
         matching = Order.where(
           company_id: @order.company_id,
           order_type: Order::SELL,
@@ -37,6 +41,9 @@ class OrdersController < ApplicationController
         ).first
 
         if matching
+          # Credit the seller
+          matching.user.balance += matching.price
+
           trade = Trade.new(
             buy_order:  @order,
             sell_order: matching,
@@ -58,11 +65,12 @@ class OrdersController < ApplicationController
           seller_holding.quantity -= 1
 
           # Save in DB
-          trade.save
-          seller_holding.save
-          buyer_holding.save
-          @order.update_attributes(:status => Order::COMPLETED)
-          matching.update_attributes(:status => Order::COMPLETED)
+          matching.user.save!
+          trade.save!
+          seller_holding.save!
+          buyer_holding.save!
+          @order.update_attributes!(:status => Order::COMPLETED)
+          matching.update_attributes!(:status => Order::COMPLETED)
         end
       else
         # Sell Order
@@ -77,6 +85,8 @@ class OrdersController < ApplicationController
         ).first
 
         if matching
+          @order.user.balance += matching.price
+
           trade = Trade.new(
             buy_order:  matching,
             sell_order: @order,
@@ -97,11 +107,12 @@ class OrdersController < ApplicationController
           ).first
           seller_holding.quantity -= 1
 
-          trade.save
-          seller_holding.save
-          buyer_holding.save
-          @order.update_attributes(:status => Order::COMPLETED)
-          matching.update_attributes(:status => Order::COMPLETED)
+          @order.user.balance.save!
+          trade.save!
+          seller_holding.save!
+          buyer_holding.save!
+          @order.update_attributes!(:status => Order::COMPLETED)
+          matching.update_attributes!(:status => Order::COMPLETED)
         end # sell order else
       end # order-type if/end
     end # transaction
