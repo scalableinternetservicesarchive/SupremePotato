@@ -4,10 +4,10 @@
 #Companies list
 #name, ticker, shares, starting_price
 companies_list = [
-  [ "CMPSC 291", "291", 20, 200],
-  [ "CMPSC 292", "292", 30, 110],
-  [ "CMPSC 263", "263", 15, 100],
-  [ "CMPSC 276", "276", 20, 150]
+  [ "Apple", 	"AAPL", 	20, 200],
+  [ "Google", 	"GOOGL", 	30, 110],
+  [ "Facebook", "FB", 		15, 100],
+  [ "Amazon", 	"AMZN", 	20, 150]
 ]
 
 companies_list.each do |name, ticker, shares, price|
