@@ -7,33 +7,41 @@
 
 <p>
   <strong>Balance:</strong>
-  <%= @user.balance %>
+  $<%= @user.balance %>.00
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
-
 <br><br>
-<h2>Portfolio</h2>
+<h3>Total Portfolio Worth</h3>
+
+<h3>Stocks</h3>
 <table>
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Company</th>
-      <th>Quantity</th>
-      <th colspan="1"></th>
+      <th>Name</th>
+      <th>Symbol</th>
+      <th>Shares</th>
+      <th>Current Price</th>
+      <th>Average Cost</th>
+      <th>Total Return</th>
+      <th>Equity</th>
     </tr>
   </thead>
 
   <tbody>
     <% @holdings.each do |holding| %>
       <tr>
-        <td><%= holding.id %></td>
-        <td><%= holding.company %></td>
+        <td><%= holding.company.name %></td>
+        <td><%= holding.company.ticker %></td>
         <td><%= holding.quantity %></td>
-        <td><%= holding.updated_at %></td>
+        <td><%= holding.company.price %></td>
+        <td>$0.00</td>
+        <td>$0.00</td>
+        <td>$<%= holding.quantity * holding.company.price %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 <br><br>
+
+<%= link_to 'Deposit History', deposits_path %>
+<%= link_to 'Back', users_path %>

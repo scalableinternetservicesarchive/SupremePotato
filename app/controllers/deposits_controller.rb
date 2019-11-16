@@ -1,6 +1,6 @@
 class DepositsController < ApplicationController
   def index
-    @deposits = Deposit.all
+    @deposits = Deposit.where(user_id: params[:user_id])
   end
 
   def new
