@@ -7,7 +7,7 @@
 
 <p>
   <strong>Balance:</strong>
-  $<%= @user.balance %>.00
+  <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
 </p>
 
 <br><br>
@@ -33,15 +33,15 @@
         <td><%= holding.company.name %></td>
         <td><%= holding.company.ticker %></td>
         <td><%= holding.quantity %></td>
-        <td><%= holding.company.price %></td>
+        <td>$<%= number_to_currency(holding.company.price, delimiter: '', unit: '') %></td>
         <td>$0.00</td>
         <td>$0.00</td>
-        <td>$<%= holding.quantity * holding.company.price %></td>
+        <td>$<%= number_to_currency(holding.quantity * holding.company.price, delimiter: '', unit: '') %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 <br><br>
 
-<%= link_to 'Deposit History', user_deposits_path(@user.id) %>
+<%= link_to 'Deposits', user_deposits_path(@user.id) %>
 <%= link_to 'Back', users_path %>

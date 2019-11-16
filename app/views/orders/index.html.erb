@@ -22,7 +22,7 @@
         <td><%= order.id %></td>
         <td><%= order.order_name %></td>
         <td><%= order.company.name %></td>
-        <td><%= order.price %></td>
+        <td>$<%= number_to_currency(order.price, delimiter: '', unit: '') %></td>
         <td><%= order.user.name %></td>
         <td><%= order.status_name %></td>
         <td><%= link_to 'Show', order %></td>

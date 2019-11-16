@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_16_195357) do
+ActiveRecord::Schema.define(version: 2019_11_16_212828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_195357) do
 
   create_table "deposits", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "amount"
+    t.decimal "amount", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_195357) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "price"
+    t.decimal "price", precision: 12, scale: 2
     t.integer "company_id"
     t.integer "user_id"
     t.integer "status"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_195357) do
     t.integer "buy_order_id"
     t.integer "sell_order_id"
     t.integer "company_id"
-    t.integer "price"
+    t.decimal "price", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_trades_on_company_id"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2019_11_16_195357) do
 
   create_table "users", force: :cascade do |t|
     t.string "name"
-    t.integer "balance"
+    t.decimal "balance", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

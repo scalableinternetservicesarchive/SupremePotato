@@ -18,7 +18,7 @@
 
     <div class="field">
       <%= form.label "Amount" %>
-      <%= form.number_field :amount %>
+      $<%= form.number_field :amount, value: number_to_currency(form.object.amount.to_f, delimiter: '', unit: ''), step: "0.01" %>
     </div>
 
     <div class="actions">

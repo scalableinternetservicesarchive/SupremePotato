@@ -15,13 +15,11 @@
     <%= form.label :order_type %>
     <%#= form.number_field :order_type %>
     <%= form.select :order_type, {Buy: Order::BUY, Sell: Order::SELL} %>
-
-
   </div>
 
   <div class="field">
     <%= form.label :price %>
-    <%= form.number_field :price %>
+    $<%= form.number_field :price, value: number_to_currency(form.object.amount.to_f, delimiter: '', unit: ''), step: "0.01" %>
   </div>
 
   <div class="field">

@@ -17,7 +17,7 @@
   <tbody>
     <% @deposits.each do |deposit| %>
       <tr>
-        <td>$<%= deposit.amount %>.00</td>
+        <td>$<%= number_to_currency(deposit.amount, delimiter: '', unit: '') %></td>
         <td><%= deposit.updated_at %></td>
       </tr>
     <% end %>

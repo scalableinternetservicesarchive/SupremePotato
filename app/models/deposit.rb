@@ -4,7 +4,7 @@ class Deposit < ApplicationRecord
 
     private
     def check_valid_amount
-        if self.user.balance + self.amount < 0
+        if self.user.balance < 0
             self.errors[:amount] << "Can't withdraw more than account balance."
         end
     end
