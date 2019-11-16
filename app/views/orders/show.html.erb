@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Type:</strong>
-  <%= @order.order_type %>
+  <strong>Order Type:</strong>
+  <%= @order.order_type == Order::BUY ? 'BUY' : 'SELL'  %>
 </p>
 
 <p>
@@ -12,17 +12,17 @@
 
 <p>
   <strong>Company:</strong>
-  <%= @order.company_id %>
+  <%= @order.company.name %>
 </p>
 
 <p>
   <strong>User:</strong>
-  <%= @order.user_id %>
+  <%= @order.user.name %>
 </p>
 
 <p>
   <strong>Status:</strong>
-  <%= @order.status %>
+  <%= @order.status == Order::PENDING ? 'PENDING' : 'COMPLETED' %>
 </p>
 
 <%= link_to 'Edit', edit_order_path(@order) %> |

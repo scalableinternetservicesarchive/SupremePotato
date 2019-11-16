@@ -1,11 +1,13 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Orders</h1>
-
+<h5><%= @user_id ? "/user_id=" + @user_id : "" %></h5>
+<%= link_to 'New Order', new_order_path %>
 <table>
   <thead>
     <tr>
-      <th>Type</th>
+      <th>Order Id</th>
+      <th>Order Type</th>
       <th>Price</th>
       <th>Company</th>
       <th>User</th>
@@ -17,11 +19,12 @@
   <tbody>
     <% @orders.each do |order| %>
       <tr>
-        <td><%= order.order_type %></td>
+        <td><%= order.id %></td>
+        <td><%= order.order_type == Order::BUY ? 'BUY' : 'SELL' %></td>
         <td><%= order.price %></td>
-        <td><%= order.company_id %></td>
-        <td><%= order.user_id %></td>
-        <td><%= order.status %></td>
+        <td><%= order.company.name %></td>
+        <td><%= order.user.name %></td>
+        <td><%= order.status == Order::PENDING ? 'PENDING' : 'COMPLETED' %></td>
         <td><%= link_to 'Show', order %></td>
         <td><%= link_to 'Edit', edit_order_path(order) %></td>
         <td><%= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -30,6 +33,5 @@
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Order', new_order_path %>
+<br><br>
+<%= will_paginate @orders %>
