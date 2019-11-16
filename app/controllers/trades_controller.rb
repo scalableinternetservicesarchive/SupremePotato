@@ -4,7 +4,7 @@ class TradesController < ApplicationController
   # GET /trades
   # GET /trades.json
   def index
-    @trades = Trade.all
+    @trades = Trade.all.includes(:company)
   end
 
   # GET /trades/1

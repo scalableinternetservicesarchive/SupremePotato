@@ -29,3 +29,7 @@
 log
 tmp
 
+.DS_Store
+app/.DS_Store
+app/views/.DS_Store
+db/.DS_Store

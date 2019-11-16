@@ -4,12 +4,19 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.all
+    vars = request.query_parameters # Potentially allows us to filter orders based on user_id 
+    if(vars['user_id'])
+      @user_id = vars['user_id']
+      @orders = Order.where(user_id: vars['user_id']).includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
+    else
+      @orders = Order.all.order('id DESC').includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
+    end
   end
 
   # GET /orders/1
   # GET /orders/1.json
   def show
+    @order = Order.includes(:company).includes(:user).find(params[:id])
   end
 
   # GET /orders/new
