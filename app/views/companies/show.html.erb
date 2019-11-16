@@ -23,6 +23,8 @@
   <thead>
     <tr>
       <th>ID</th>
+      <th>Buyer</th>
+      <th>Seller</th>
       <th>Price</th>
       <th>Updated At</th>
     </tr>
@@ -32,6 +34,8 @@
     <% @trades.each do |trade| %>
       <tr>
         <td><%= trade.id %></td>
+        <td><%= trade.buy_order.user.name %></td>
+        <td><%= trade.sell_order.user.name %></td>
         <td><%= trade.price %></td>
         <td><%= trade.updated_at %></td>
       </tr>
