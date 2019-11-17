@@ -41,7 +41,33 @@
     <% end %>
   </tbody>
 </table>
+
 <br><br>
+
+<h2>Trade Records</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Buyer</th>
+      <th>Seller</th>
+      <th>Price</th>
+      <th>Updated At</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @trades.each do |trade| %>
+      <tr>
+        <td><%= trade.id %></td>
+        <td><%= trade.buy_order.user.name %></td>
+        <td><%= trade.sell_order.user.name %></td>
+        <td><%= trade.price %></td>
+        <td><%= trade.updated_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link_to 'Deposits', user_deposits_path(@user.id) %>
 <%= link_to 'Back', users_path %>
