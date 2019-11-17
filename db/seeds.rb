@@ -15,20 +15,20 @@ companies_list.each do |name, ticker, shares, price|
   company = Company.create(
     name:    name,
     ticker:  ticker,
-    shares:  shares
+    shares:  shares,
   )
 
   #Create CEO users entries
   ceo = User.create(
     name:    name + "-CEO",
-    balance: 0
+    balance: 1000000,
   )
 
   #Crate User holdinng entries
   holdings = Holding.create(
     user_id:    ceo.id,
     company_id: company.id,
-    quantity:   shares
+    quantity:   shares,
   )
 
   #Create #shares number of sales orders (because each order only allow one share atm)
