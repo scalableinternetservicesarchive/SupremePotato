@@ -8,11 +8,12 @@
     <tr>
       <th>Order Id</th>
       <th>Order Type</th>
-      <th>Price</th>
       <th>Company</th>
+      <th>Price</th>
       <th>User</th>
       <th>Status</th>
-      <th colspan="3"></th>
+      <th>Details</th>
+      <th>Cancel Trade</th>
     </tr>
   </thead>
 
@@ -20,14 +21,13 @@
     <% @orders.each do |order| %>
       <tr>
         <td><%= order.id %></td>
-        <td><%= order.order_type == Order::BUY ? 'BUY' : 'SELL' %></td>
-        <td><%= order.price %></td>
+        <td><%= order.order_name %></td>
         <td><%= order.company.name %></td>
+        <td>$<%= number_to_currency(order.price, delimiter: '', unit: '') %></td>
         <td><%= order.user.name %></td>
-        <td><%= order.status == Order::PENDING ? 'PENDING' : 'COMPLETED' %></td>
+        <td><%= order.status_name %></td>
         <td><%= link_to 'Show', order %></td>
-        <td><%= link_to 'Edit', edit_order_path(order) %></td>
-        <td><%= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Cancel', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

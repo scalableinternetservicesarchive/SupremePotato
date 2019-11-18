@@ -1,0 +1,28 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Banking</h1>
+
+<%= form_for([:user, @deposit]) do |form| %>
+
+  <% if @deposit.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@deposit.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @deposit.errors.each do |attr, msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <div class="field">
+      <%= form.label "Amount" %>
+      $<%= form.number_field :amount, value: number_to_currency(form.object.amount.to_f, delimiter: '', unit: ''), step: "0.01" %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+
+<% end %>

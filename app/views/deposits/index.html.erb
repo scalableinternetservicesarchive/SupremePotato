@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Banking History</h1>
+
+<%= link_to 'New Deposit/Withdrawal', new_user_deposit_path(params[:user_id]) %>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th>Transaction Amount</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @deposits.each do |deposit| %>
+      <tr>
+        <td>$<%= number_to_currency(deposit.amount, delimiter: '', unit: '') %></td>
+        <td><%= deposit.updated_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

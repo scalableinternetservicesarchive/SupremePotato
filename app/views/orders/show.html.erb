@@ -7,7 +7,7 @@
 
 <p>
   <strong>Price:</strong>
-  <%= @order.price %>
+  $<%= number_to_currency(@order.price, delimiter: '', unit: '') %>
 </p>
 
 <p>
@@ -25,5 +25,4 @@
   <%= @order.status == Order::PENDING ? 'PENDING' : 'COMPLETED' %>
 </p>
 
-<%= link_to 'Edit', edit_order_path(@order) %> |
 <%= link_to 'Back', orders_path %>

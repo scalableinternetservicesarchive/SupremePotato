@@ -7,8 +7,67 @@
 
 <p>
   <strong>Balance:</strong>
-  <%= @user.balance %>
+  <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
+<br><br>
+<h3>Total Portfolio Worth</h3>
+
+<h3>Stocks</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Symbol</th>
+      <th>Shares</th>
+      <th>Current Price</th>
+      <th>Average Cost</th>
+      <th>Total Return</th>
+      <th>Equity</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @holdings.each do |holding| %>
+      <tr>
+        <td><%= holding.company.name %></td>
+        <td><%= holding.company.ticker %></td>
+        <td><%= holding.quantity %></td>
+        <td>$<%= number_to_currency(holding.company.price, delimiter: '', unit: '') %></td>
+        <td>$0.00</td>
+        <td>$0.00</td>
+        <td>$<%= number_to_currency(holding.quantity * holding.company.price, delimiter: '', unit: '') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br><br>
+
+<h2>Trade Records</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Buyer</th>
+      <th>Seller</th>
+      <th>Price</th>
+      <th>Updated At</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @trades.each do |trade| %>
+      <tr>
+        <td><%= trade.id %></td>
+        <td><%= trade.buy_order.user.name %></td>
+        <td><%= trade.sell_order.user.name %></td>
+        <td><%= trade.price %></td>
+        <td><%= trade.updated_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Deposits', user_deposits_path(@user.id) %>
 <%= link_to 'Back', users_path %>
