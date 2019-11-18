@@ -42,6 +42,3 @@ companies_list.each do |name, ticker, shares, price|
     )
   }
 end
-
-
-
