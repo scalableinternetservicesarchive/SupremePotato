@@ -15,9 +15,9 @@ Things you may want to cover:
 
 * Database initialization
 
-###Deploy your project using Elastic Beanstalk
+### Deploy your project using Elastic Beanstalk
 
-####SSH To EC2 And Clone Repository
+#### SSH To EC2 And Clone Repository
 
 1. ssh into our EC2 instance with the provided secret key SupremePotato.pem
 ```sh
