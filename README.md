@@ -58,11 +58,17 @@ eb ssh -e "ssh -i ~/$(whoami).pem" [YOURNAME]
 cd /var/app/current
 ```
 
-2. to seed the database
+
+2. to purge the database
+```sh
+ActiveRecord::Base.logger.level = 1 ; Company.delete_all ; Deposit.delete_all ; Holding.delete_all ; Order.delete_all ;  Trade.delete_all; User.delete_all ; ActiveRecord::Base.logger.level = 0 | rails c
+```
+
+3. to seed the database
 ```sh
 rails db:seed
 ```
-If you encounter permission issue, please make sure to configure the permission for the /var/app/current/tmp directory.
+If you encounter permission issue, please make sure to correct the permission of `/var/app/current/tmp` && `/var/app/current/log` directories.
 
 
 * ...
