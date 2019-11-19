@@ -2,7 +2,7 @@
 
 <p>
   <strong>Order Type:</strong>
-  <%= @order.order_type == Order::BUY ? 'BUY' : 'SELL'  %>
+  <%= @order.order_name  %>
 </p>
 
 <p>
@@ -22,7 +22,7 @@
 
 <p>
   <strong>Status:</strong>
-  <%= @order.status == Order::PENDING ? 'PENDING' : 'COMPLETED' %>
+  <%= @order.status_name %>
 </p>
 
 <%= link_to 'Back', orders_path %>
