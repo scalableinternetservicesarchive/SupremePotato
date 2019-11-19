@@ -60,6 +60,10 @@ class OrdersController < ApplicationController
           ).first
           seller_holding.quantity -= 1
 
+          # Refund difference to buyer
+          @order.user.balance += @order.price - matching.price
+          @order.user.save!
+
           # Save in DB
           matching.user.save!
           trade.save!
