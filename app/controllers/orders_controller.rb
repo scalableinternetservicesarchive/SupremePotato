@@ -2,24 +2,17 @@ class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :destroy]
 
   def index
-    vars = request.query_parameters # Potentially allows us to filter orders based on user_id
-    if(vars['user_id'])
-      @user_id = vars['user_id']
-      @orders = Order.where(user_id: vars['user_id']).includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
-    elsif(vars['company_id'])
-      @company_id = vars['company_id']
-      @orders = Order.where(company_id: vars['company_id']).includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
-    else
-      @orders = Order.all.order('id DESC').includes(:company).includes(:user).paginate(:page => params[:page], :per_page => 15)
-    end
+    filter  = params.permit(:company_id, :user_id)
+    @orders = Order.where(filter).includes(:company, :user).order('id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
   def show
-    @order = Order.includes(:company).includes(:user).find(params[:id])
+    @order = Order.includes(:company, :user).find(params[:id])
   end
 
   def new
-    @order = Order.new
+    order_params = params.permit(:company_id, :user_id)
+    @order = Order.new(order_params)
   end
 
   def create
