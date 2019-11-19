@@ -50,7 +50,7 @@ eb status [YOURNAME]
 ```
 If the deployment is successful, the `Status` field should be `Ready`, and the `Health` should be `Green`.
 
-####Seed the Dababase
+#### Seed the Dababase
 
 1. ssh into your application server (replace [YOURNAME] with your name)
 ```sh
