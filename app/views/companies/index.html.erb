@@ -23,7 +23,7 @@
         <td>$<%= number_to_currency(company.price, delimiter: '', unit: '') %>
         </td>
         <td><%= link_to 'Trades', company %></td>
-        <td><%= link_to 'Orders', orders_path(company_id: company) %></td>
+        <td><%= link_to 'Orders', company_orders_path(company.id) %></td>
       </tr>
     <% end %>
   </tbody>
