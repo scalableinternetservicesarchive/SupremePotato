@@ -84,6 +84,16 @@ class OrdersController < ApplicationController
           'price ASC'
         ).first
 
+        # Check Seller Holding Quantity!
+        seller_holding = Holding.where(
+          company_id: @order.company_id,
+          user_id:    @order.user_id,
+        ).first
+
+        if seller_holding.quantity == 0
+          raise 'Invalid Holding Quantity To Create SELL Order.'
+        end
+
         if matching
           @order.user.balance += matching.price
 
@@ -100,11 +110,6 @@ class OrdersController < ApplicationController
             company_id: matching.company_id
           ).first_or_create
           buyer_holding.quantity += 1
-
-          seller_holding = Holding.where(
-            company_id: @order.company_id,
-            user_id:    @order.user_id,
-          ).first
           seller_holding.quantity -= 1
 
           @order.user.balance.save!
