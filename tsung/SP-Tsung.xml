@@ -217,9 +217,9 @@
           <var name="price" />
         </setdynvars>
 
-        <!-- Should we make users intend to 'buy' instead of 'sell'?--> 
-        <setdynvars sourcetype="random_number" start="1" end="2">
-          <var name="type" />
+        <!-- Make users more likely to BUY instead of SELL --> 
+        <setdynvars sourcetype="random_number" start="1" end="3">
+          <var name="type_chance" />
         </setdynvars>
 
         <transaction name="new_order">
@@ -235,13 +235,26 @@
         </setdynvars>
 
         <transaction name="create_order">
-          <request subst="true">
-            <http 
-              url='/users/%%_user_id%%/orders' 
-              method='POST' 
-              contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=%%_type%%&amp;order%5Buser_id%5D=%%_user_id%%">    
-            </http>
-          </request>
+          <!-- If 1 & 2, then order_type = 1 (2/3 change to create BUY order!) --> 
+          <if var="type_chance" lt="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/orders' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Buser_id%5D=%%_user_id%%">    
+              </http>
+            </request>
+          </if>
+          <!-- If 3, then order_type = 2 (1/3 change to create SELL order!) --> 
+          <if var="type_chance" gte="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/orders' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Buser_id%5D=%%_user_id%%">    
+              </http>
+            </request>
+          </if>
         </transaction>
       </for> 
 
