@@ -33,7 +33,7 @@
     <arrivalphase phase="5" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="16" unit="second"></users>
     </arrivalphase>
-    
+
     <!--
     <arrivalphase phase="6" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="32" unit="second"></users>
@@ -213,10 +213,11 @@
           <var name="company_id" />
         </setdynvars>
 
-        <setdynvars sourcetype="random_number" start="10" end="300">
+        <setdynvars sourcetype="random_number" start="100" end="300">
           <var name="price" />
         </setdynvars>
 
+        <!-- Should we make users internd to buy instead of sell?--> 
         <setdynvars sourcetype="random_number" start="1" end="2">
           <var name="type" />
         </setdynvars>
