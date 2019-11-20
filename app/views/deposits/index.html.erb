@@ -1,10 +1,19 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Banking History</h1>
+<p>
+  <strong>Name:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>Balance:</strong>
+  <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
+</p>
 
 <%= link_to 'New Deposit/Withdrawal', new_user_deposit_path(params[:user_id]) %>
 
 <br><br>
+<h2>Banking History</h2>
 
 <table>
   <thead>

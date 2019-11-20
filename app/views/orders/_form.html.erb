@@ -12,8 +12,10 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :order_type %>
-    <%= form.select :order_type, {Buy: Order::BUY, Sell: Order::SELL} %>
+    <%= form.radio_button :order_type, Order::BUY, :checked => true, :style =>'display: inline-block;'%>
+    <%= form.label :order_type, 'BUY', :style =>'display: inline-block;'%>
+    <%= form.radio_button :order_type, Order::SELL, :style =>'display: inline-block;'%>
+    <%= form.label :order_type, 'SELL', :style =>'display: inline-block;'%>
   </div>
 
   <div class="field">

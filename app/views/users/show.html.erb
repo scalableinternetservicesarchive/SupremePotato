@@ -9,9 +9,10 @@
   <strong>Balance:</strong>
   <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
 </p>
-
+<%= link_to 'Deposits', user_deposits_path(@user.id) %>
+<%= link_to 'Back', users_path %>
 <br><br>
-<h3>Total Portfolio Worth</h3>
+<h2>Total Portfolio Worth</h2>
 
 <h3>Stocks</h3>
 <table>
@@ -44,7 +45,7 @@
 
 <br><br>
 
-<h2>Trade Records</h2>
+<h3>Trade Records</h3>
 <table>
   <thead>
     <tr>
@@ -68,6 +69,5 @@
     <% end %>
   </tbody>
 </table>
+<br>
 
-<%= link_to 'Deposits', user_deposits_path(@user.id) %>
-<%= link_to 'Back', users_path %>

@@ -15,10 +15,71 @@ Things you may want to cover:
 
 * Database initialization
 
-* How to run the test suite
+### Deploy your project using Elastic Beanstalk
 
-* Services (job queues, cache servers, search engines, etc.)
+#### SSH To EC2 And Clone Repository
 
-* Deployment instructions
+1. ssh into our EC2 instance with the provided secret key SupremePotato.pem
+```sh
+ssh -i ~/Downloads/SupremePotato.pem.txt SupremePotato@ec2.cs291.com
+```
+
+2. clone SupremePotato repository using HTTPS
+```sh
+git clone https://github.com/scalableinternetservices/SupremePotato.git
+```
+
+3. configure Elastic Beanstalk
+```sh
+cd SupremePotato
+eb init --keyname $(whoami) \
+  --platform "64bit Amazon Linux 2018.03 v2.11.0 running Ruby 2.6 (Puma)" \
+  --region us-west-2 SupremePotato
+```
+
+4. perform delpoyment on Elastic Beanstalk (replace [YOURNAME] with your name)
+```sh
+eb create --envvars SECRET_KEY_BASE=BADSECRET \
+  -db.engine postgres -db.i db.t3.micro -db.user u \
+  -i t3.micro --single [YOURNAME]
+```
+
+5. verify the deployment (replace [YOURNAME] with your name)
+```sh
+eb status [YOURNAME]
+```
+If the deployment is successful, the `Status` field should be `Ready`, and the `Health` should be `Green`.
+
+#### Seed the Dababase
+
+1. ssh into your application server (replace [YOURNAME] with your name)
+```sh
+eb ssh -e "ssh -i ~/$(whoami).pem" [YOURNAME]
+cd /var/app/current
+```
+
+
+2. to purge the database
+```sh
+ActiveRecord::Base.logger.level = 1 ; Company.delete_all ; Deposit.delete_all ; Holding.delete_all ; Order.delete_all ;  Trade.delete_all; User.delete_all ; ActiveRecord::Base.logger.level = 0 | rails c
+```
+
+3. to seed the database
+```sh
+rails db:seed
+```
+If you encounter permission issue, please make sure to correct the permission of `/var/app/current/tmp` && `/var/app/current/log` directories.
+
 
 * ...
+
+
+
+
+
+
+
+
+
+
+
