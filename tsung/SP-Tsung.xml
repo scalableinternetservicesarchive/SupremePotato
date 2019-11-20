@@ -217,7 +217,7 @@
           <var name="price" />
         </setdynvars>
 
-        <!-- Should we make users internd to buy instead of sell?--> 
+        <!-- Should we make users intend to 'buy' instead of 'sell'?--> 
         <setdynvars sourcetype="random_number" start="1" end="2">
           <var name="type" />
         </setdynvars>
