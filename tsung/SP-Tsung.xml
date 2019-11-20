@@ -120,8 +120,6 @@
         <var name="authenticity_token"/>
       </setdynvars>
 
-      <!--<thinktime random="true" value="4"/>-->
-
       <setdynvars sourcetype="random_string" length="5">
         <var name="rndstring" />
       </setdynvars>
