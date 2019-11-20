@@ -10,48 +10,48 @@
   <!-- Server side setup -->
   <servers>
     <!-- <server host="siddarth.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
-    <server host="localhost" port="3000" type="tcp"></server>
+    <server host="siddarth9999.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
-    <arrivalphase phase="1" duration="30" unit="second">
+    <arrivalphase phase="1" duration="15" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="1" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="2" duration="30" unit="second">
+    <arrivalphase phase="2" duration="15" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="2" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="3" duration="30" unit="second">
+    <!--
+
+    <arrivalphase phase="3" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="4" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="4" duration="30" unit="second">
+    <arrivalphase phase="4" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="8" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="5" duration="30" unit="second">
+    <arrivalphase phase="5" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="16" unit="second"></users>
     </arrivalphase>
 
-    <!--
-    <arrivalphase phase="6" duration="30" unit="second">
+    <arrivalphase phase="6" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="32" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="7" duration="30" unit="second">
+    <arrivalphase phase="7" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="64" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="8" duration="30" unit="second">
+    <arrivalphase phase="8" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="128" unit="second"></users>
     </arrivalphase>
 
-    <arrivalphase phase="9" duration="30" unit="second">
+    <arrivalphase phase="9" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="256" unit="second"></users>
     </arrivalphase>
     -->
-
   </load>
 
   <options>
@@ -59,7 +59,8 @@
   </options>
 
   <sessions>
-    <session name="View Company" probability="20" type="ts_http">
+
+    <session name="View Company" weight="1" type="ts_http">
       <setdynvars sourcetype="random_number" start="1" end="4">
         <var name="company_id" />
       </setdynvars>
@@ -70,15 +71,39 @@
         </request>
       </transaction>
 
-      <transaction name="view_company">
+      <transaction name="view_company_trades">
         <request subst="true">
           <http url='/companies/%%_company_id%%'></http>
         </request>
       </transaction>
+
+      <transaction name="view_company_orders">
+        <request subst="true">
+          <http url='/companies/%%_company_id%%/orders'></http>
+        </request>
+      </transaction>
     </session>
 
+    <!-- Maybe remove this session later!--> 
+    <session name="View CEO User" weight="1" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="user_id" />
+      </setdynvars>
 
-    <session name="Create User" probability="20" type="ts_http">
+      <transaction name="view_ceo">
+        <request subst="true">
+          <http url='/users/%%_user_id%%'></http>
+        </request>
+      </transaction>
+
+      <transaction name="view_ceo_orders">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/orders'></http>
+        </request>
+      </transaction>
+    </session>
+
+    <session name="Create User" weight="1" type="ts_http">
       <transaction name="users_index">
         <request>
           <http url='/users'></http>
@@ -96,7 +121,7 @@
         <var name="authenticity_token"/>
       </setdynvars>
 
-      <thinktime random="true" value="4"/>
+      <!--<thinktime random="true" value="4"/>-->
 
       <setdynvars sourcetype="random_string" length="5">
         <var name="rndstring" />
@@ -105,7 +130,11 @@
       <transaction name="create_user">
         <request subst="true">
           <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
-          <http url='/users' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=User %%_rndstring%%"></http>
+          <http 
+            url='/users' 
+            method='POST' 
+            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=Usr-%%_rndstring%%">
+          </http>
         </request>
       </transaction>
 
@@ -114,62 +143,78 @@
           <http url='/users/%%_user_id%%'></http>
         </request>
       </transaction>
+
+      <transaction name="view_user_orders">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/orders'></http>
+        </request>
+      </transaction>
+    
+    <!-- MERGE THESE TWO SESSION!
     </session>
+    
+    <session name="Make Deposit" weight="1" type="ts_http">
+    --> 
 
+      <!-- Each user can deposit 5 times.--> 
+      <for from="1" to="5" incr="1" var="counter">
 
-    <session name="View User Info" probability="20" type="ts_http">
-      <setdynvars sourcetype="random_number" start="1" end="4">
-        <var name="user_id" />
-      </setdynvars>
+        <!--DO NOT PUT THINKTIME IN TRANSACTION!-->
+        <thinktime value="2" random="true"></thinktime>
 
-      <transaction name="view_user">
-        <request subst="true">
-          <http url='/users/%%_user_id%%'></http>
-        </request>
-      </transaction>
+        <setdynvars sourcetype="random_number" start="0" end="500">
+          <var name="amount" />
+        </setdynvars>
 
-      <transaction name="view_trades">
-        <request subst="true">
-          <http url='/users/%%_user_id%%/trades'></http>
-        </request>
-      </transaction>
-    </session>
+        <setdynvars sourcetype="random_number" start="0" end="4">
+          <var name="positive_or_negative" />
+        </setdynvars>
 
+        <transaction name="new_deposit">
+          <request subst="true">
+            <dyn_variable name="authenticity_token"/>
+            <http url='/users/%%_user_id%%/deposits/new'></http>
+          </request>
+        </transaction>
 
-    <session name="Make Deposit" probability="20" type="ts_http">
-      <setdynvars sourcetype="random_number" start="1" end="4">
-        <var name="user_id" />
-      </setdynvars>
+        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+          <var name="authenticity_token"/>
+        </setdynvars>
 
-      <setdynvars sourcetype="random_number" start="-100" end="100">
-        <var name="amount" />
-      </setdynvars>
+        <transaction name="create_deposit">
+          <!-- Tsung does not support negative value. Have to use IF statement--> 
+          <if var="positive_or_negative" gte="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/deposits' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;deposit%5Bamount%5D=%%_amount%%">
+              </http>
+            </request>
+          </if>
+          <if var="positive_or_negative" lt="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/deposits' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;deposit%5Bamount%5D=-%%_amount%%">
+              </http>
+            </request>
+          </if>
+        </transaction>
 
-      <transaction name="new_deposit">
-        <request subst="true">
-          <dyn_variable name="authenticity_token"/>
-          <http url='/users/%%_user_id%%/deposits/new'></http>
-        </request>
-      </transaction>
-
-      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
-        <var name="authenticity_token"/>
-      </setdynvars>
-
-      <transaction name="create_deposit">
-        <request subst="true">
-          <http url='/users/%%_user_id%%/deposits' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;deposit%5Bamount%5D=%%amount%%"></http>
-        </request>
-      </transaction>
+    </for>
 
       <transaction name="deposits">
         <request subst="true">
           <http url='/users/%%_user_id%%/deposits'></http>
         </request>
       </transaction>
+      
     </session>
 
-
+    
+    <!-- Comment out temporarily
     <session name="Place Order" probability="20" type="ts_http">
       <setdynvars sourcetype="random_number" start="1" end="4">
         <var name="user_id" />
@@ -210,5 +255,7 @@
         </request>
       </transaction>
     </session>
+    --> 
+
   </sessions>
 </tsung>
