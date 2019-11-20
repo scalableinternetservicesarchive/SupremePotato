@@ -23,7 +23,6 @@
     </arrivalphase>
 
     <!--
-
     <arrivalphase phase="3" duration="30" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="4" unit="second"></users>
     </arrivalphase>
@@ -149,18 +148,14 @@
           <http url='/users/%%_user_id%%/orders'></http>
         </request>
       </transaction>
-    
-    <!-- MERGE THESE TWO SESSION!
-    </session>
-    
-    <session name="Make Deposit" weight="1" type="ts_http">
-    --> 
 
-      <!-- Each user can deposit 5 times.--> 
+      <!-- PROCESS Deposits --> 
+      <!-- 
+        * Each user can deposit 5 times.
+        * Any way to make it loop 'dynamic' times (ex. 1 or 4 times)? 
+      --> 
       <for from="1" to="5" incr="1" var="counter">
-
-        <!--DO NOT PUT THINKTIME IN TRANSACTION!-->
-        <thinktime value="2" random="true"></thinktime>
+        <thinktime value="2" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
 
         <setdynvars sourcetype="random_number" start="0" end="500">
           <var name="amount" />
@@ -182,7 +177,7 @@
         </setdynvars>
 
         <transaction name="create_deposit">
-          <!-- Tsung does not support negative value. Have to use IF statement--> 
+          <!-- Positive Deporit--> 
           <if var="positive_or_negative" gte="3">
             <request subst="true">
               <http 
@@ -192,6 +187,7 @@
               </http>
             </request>
           </if>
+          <!-- Negative Deporit--> 
           <if var="positive_or_negative" lt="3">
             <request subst="true">
               <http 
@@ -202,60 +198,58 @@
             </request>
           </if>
         </transaction>
-
-    </for>
+      </for>
 
       <transaction name="deposits">
         <request subst="true">
           <http url='/users/%%_user_id%%/deposits'></http>
         </request>
       </transaction>
-      
-    </session>
 
-    
-    <!-- Comment out temporarily
-    <session name="Place Order" probability="20" type="ts_http">
-      <setdynvars sourcetype="random_number" start="1" end="4">
-        <var name="user_id" />
-      </setdynvars>
+      <!-- PROCESS ORDERS --> 
 
-      <setdynvars sourcetype="random_number" start="1" end="4">
-        <var name="company_id" />
-      </setdynvars>
+      <!-- Each user has 3 chances to create order -->
+      <for from="1" to="3" incr="1" var="order_counter">
+        <setdynvars sourcetype="random_number" start="1" end="4">
+          <var name="company_id" />
+        </setdynvars>
 
-      <setdynvars sourcetype="random_number" start="100" end="200">
-        <var name="price" />
-      </setdynvars>
+        <setdynvars sourcetype="random_number" start="10" end="300">
+          <var name="price" />
+        </setdynvars>
 
-      <setdynvars sourcetype="random_number" start="1" end="2">
-        <var name="type" />
-      </setdynvars>
+        <setdynvars sourcetype="random_number" start="1" end="2">
+          <var name="type" />
+        </setdynvars>
 
-      <transaction name="new_order">
-        <request subst="true">
-          <dyn_variable name="authenticity_token"/>
-          <http url='/users/%%_user_id%%/orders/new'></http>
-        </request>
-      </transaction>
+        <transaction name="new_order">
+          <request subst="true">
+            <!-- <dyn_variable name="authenticity_token"/> Somehow it cannot be obtained--> 
+            <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+            <http url='/users/%%_user_id%%/orders/new'></http>
+          </request>
+        </transaction>
 
-      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
-        <var name="authenticity_token"/>
-      </setdynvars>
+        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+          <var name="authenticity_token"/>
+        </setdynvars>
 
-      <transaction name="create_order">
-        <request subst="true">
-          <http url='/users/%%_user_id%%/order' method='POST' contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=%%_type%%"></http>
-        </request>
-      </transaction>
+        <transaction name="create_order">
+          <request subst="true">
+            <http 
+              url='/users/%%_user_id%%/orders' 
+              method='POST' 
+              contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=%%_type%%&amp;order%5Buser_id%5D=%%_user_id%%">    
+            </http>
+          </request>
+        </transaction>
+      </for> 
 
       <transaction name="orders">
         <request subst="true">
           <http url='/users/%%_user_id%%/orders'></http>
         </request>
       </transaction>
-    </session>
-    --> 
-
+    </session> 
   </sessions>
 </tsung>
