@@ -220,7 +220,7 @@
 
       <!-- Each user has 3 chances to create order -->
       <for from="1" to="3" incr="1" var="order_counter">
-        <thinktime value="5" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
+        <thinktime value="4" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
         
         <setdynvars sourcetype="random_number" start="1" end="4">
           <var name="company_id" />
