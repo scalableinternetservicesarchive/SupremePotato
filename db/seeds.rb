@@ -18,6 +18,16 @@ Order.delete_all
 Trade.delete_all
 User.delete_all
 
+#If the deployment is a new instance, occupies the first four ids!
+#Must use xxx.create function here instad of hard-code id!!! 
+4.times { |i|
+  ceo = User.create(
+    name:    i.to_s + "-CEO",
+    balance: 1,
+  )
+}
+User.delete_all
+
 companies_list.each do |id, name, ticker, shares, price|
   #Crate companies entries
   company = Company.new(
@@ -29,12 +39,12 @@ companies_list.each do |id, name, ticker, shares, price|
   company.save!
 
   #Create CEO users entries
-  ceo = User.create(
+  ceo = User.new(
     name:    name + "-CEO",
     balance: 1000000,
   )
-  #ceo.id = id
-  #ceo.save!
+  ceo.id = id 
+  ceo.save!
 
   #Crate User holdinng entries
   holdings = Holding.create(
