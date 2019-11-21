@@ -10,7 +10,7 @@
   <!-- Server side setup -->
   <servers>
     <!-- <server host="siddarth.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
-    <server host="siddarth9999.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="chenz-deploy.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
@@ -85,6 +85,7 @@
     </session>
 
     <!-- Maybe remove this session later!--> 
+    <!-- No need to view CEO user here. We cannot hardcode CEO user id (had to revoke seed file)
     <session name="View CEO User" weight="1" type="ts_http">
       <setdynvars sourcetype="random_number" start="1" end="4">
         <var name="user_id" />
@@ -102,6 +103,7 @@
         </request>
       </transaction>
     </session>
+    --> 
 
     <session name="Create User" weight="1" type="ts_http">
       <transaction name="users_index">
