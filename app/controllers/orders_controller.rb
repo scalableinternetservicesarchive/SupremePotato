@@ -90,7 +90,7 @@ class OrdersController < ApplicationController
           user_id:    @order.user_id,
         ).first
 
-        if seller_holding.quantity == 0
+        if seller_holding.nil? || seller_holding.quantity == 0 
           raise 'Invalid Holding Quantity To Create SELL Order.'
         end
 
@@ -123,6 +123,7 @@ class OrdersController < ApplicationController
     end # transaction
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
+    Rails.logger.info '[MANUAL-LOG]: ' + ex.message
     render :new
   end
 
