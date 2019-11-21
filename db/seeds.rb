@@ -4,10 +4,10 @@
 #Companies list
 #id, name, ticker, shares, starting_price
 companies_list = [
-  [1, "Apple",    "AAPL",  20, 200],
-  [2, "Google",   "GOOGL", 30, 110],
-  [3, "Facebook", "FB",    15, 100],
-  [4, "Amazon",   "AMZN",  20, 150],
+  [1, "Apple",    "AAPL",  25, 200],
+  [2, "Google",   "GOOGL", 45, 110],
+  [3, "Facebook", "FB",    20, 100],
+  [4, "Amazon",   "AMZN",  30, 150],
 ]
 
 #Erase all entries everytime before Seeding!
