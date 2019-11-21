@@ -55,6 +55,7 @@
 
   <options>
     <option name="global_ack_timeout" value="4000"></option>
+    <option name="file_server" id="userlist" value="userlist.csv"/>
   </options>
 
   <sessions>
@@ -120,8 +121,17 @@
         <var name="authenticity_token"/>
       </setdynvars>
 
+      <!--
       <setdynvars sourcetype="random_string" length="5">
         <var name="rndstring" />
+      </setdynvars>
+      --> 
+
+      <!-- 
+      http://tsung.erlang-projects.org/user_manual-current.html
+      --> 
+      <setdynvars sourcetype="file" fileid="userlist" delimiter="\n" order="random">
+        <var name="user_name" />
       </setdynvars>
 
       <transaction name="create_user">
@@ -130,7 +140,7 @@
           <http 
             url='/users' 
             method='POST' 
-            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=Usr-%%_rndstring%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%">
           </http>
         </request>
       </transaction>

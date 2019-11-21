@@ -17,12 +17,18 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    @user.balance = 0
-    if @user.save
+    @user = User.where(name: user_params[:name]).first
+
+    unless @user.nil?
       redirect_to @user, notice: 'User was successfully created.'
-    else
-      render :new
+    else 
+      @user = User.new(user_params)
+      @user.balance = 0
+      if @user.save
+        redirect_to @user, notice: 'User was successfully created2.'
+      else
+        render :new
+      end
     end
   end
 

@@ -2,3 +2,4 @@
 !*.sh
 !*.xml
 !.gitignore
+!*.csv
