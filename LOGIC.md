@@ -1,5 +1,4 @@
 ## 1. Models
-```
 Company:
 	name
 	ticker
@@ -24,22 +23,22 @@ Holding:
 	company_id
 	quantity
 	<!-- virtual_quantity -->
-```
 
 ## 2. Routes
-```
 companies	: view (name, ticker, shares, *price*, *trades*, *orders*)
 users		: view (id, name, balance, *holdings*, *trades*, *orders*) 
 			: create
 orders		: view (id, type, *company*, *user*, price)
 			: create
 			: cancel
-```
+
+
+deposits	: create
+
 ## 3. Logic
 
 #### create order
 <!-- 1 share for each order -->
-```
 a. buy order:
 	<!-- check balance -->
 	1. reduce balance
@@ -51,7 +50,6 @@ b. sell order:
 	1. get a matching buy order(highest price >= sell price)
 	2. generate a trade
 
-```
 #### generate a trade
 	1. update buy&sell order status
 
