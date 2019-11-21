@@ -112,7 +112,7 @@ class OrdersController < ApplicationController
           buyer_holding.quantity += 1
           seller_holding.quantity -= 1
 
-          @order.user.balance.save!
+          @order.user.save!
           trade.save!
           seller_holding.save!
           buyer_holding.save!
@@ -123,7 +123,7 @@ class OrdersController < ApplicationController
     end # transaction
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
-    Rails.logger.info '[MANUAL-LOG]: ' + ex.message
+    Rails.logger.info '<MANUAL-LOG>: ' + ex.message
     render :new
   end
 
