@@ -1,0 +1,2 @@
+module CurveHelper
+end
