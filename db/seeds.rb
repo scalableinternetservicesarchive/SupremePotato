@@ -29,12 +29,12 @@ companies_list.each do |id, name, ticker, shares, price|
   company.save!
 
   #Create CEO users entries
-  ceo = User.new(
+  ceo = User.create(
     name:    name + "-CEO",
     balance: 1000000,
   )
-  ceo.id = id
-  ceo.save!
+  #ceo.id = id
+  #ceo.save!
 
   #Crate User holdinng entries
   holdings = Holding.create(
