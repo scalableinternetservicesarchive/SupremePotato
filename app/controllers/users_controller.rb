@@ -6,10 +6,12 @@ class UsersController < ApplicationController
   end
 
   def show
-    @holdings = Holding.where(user_id: params[:id]).includes(:company).order('updated_at DESC')
+    @holdings = Holding.where(user_id: params[:id]).includes(:company).order('id DESC')
+    
+    # TODO: Watch out for low performance! 
     @trades = Trade.joins([:buy_order, :sell_order]).where(
       'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
-    ).order('trades.updated_at DESC')
+    ).order('trades.id DESC')
   end
 
   def new
