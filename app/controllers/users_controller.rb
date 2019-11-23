@@ -11,7 +11,7 @@ class UsersController < ApplicationController
     # TODO: Watch out for low performance! 
     @trades = Trade.joins([:buy_order, :sell_order]).where(
       'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
-    ).order('trades.id DESC')
+    ).order('trades.id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
   def new
