@@ -6,9 +6,9 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    @trades = Trade.where(
-            company_id: params[:id],
-          ).order('updated_at DESC')
+    @trades = Trade.where(company_id: params[:id])
+                .order('updated_at DESC')
+                .paginate(:page => params[:page], :per_page => 20)
   end
 
   private
