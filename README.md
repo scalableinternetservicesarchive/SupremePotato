@@ -16,6 +16,11 @@ Things you may want to cover:
 * Database initialization
 
 ### Deploy your project using Elastic Beanstalk
+1. [SSH To EC2 And Clone Repository](#SSH-To-EC2-And-Clone-Repository)
+2. [Add App Instances & Load Balancer in Web Browser](#Add-App-Instances-&-Load-Balancer-in-Web-Browser)
+3. [Seed the Database](#Seed-the-Database)
+4. [Update The Application](#Update-The-Application)
+5. [Some Useful Elastic Beanstalk Commands](#Some-Useful-Elastic-Beanstalk-Commands)
 
 #### SSH To EC2 And Clone Repository
 
@@ -114,8 +119,14 @@ eb use [NameOfInstance]
 eb printenv [NameOfInstance]
 ```
 
-
-
-
-
+### Web load testing using Tsung
+TBA~!  
+1. `launch_tsung.sh`
+2. ssh to the given ip address
+3. git clone/pull
+4. cd /tsung 
+5. modify URL
+6. tsung -kf [Tsung.XML File Path] start
+7. to view tsung status/data, go to [IPAddress]:8091
+8. ....
 
