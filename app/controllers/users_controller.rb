@@ -22,6 +22,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     @user.balance = 0
     if @user.save
+      #cache user name directly!
+      Rails.cache.write('user_name_' + @user.id.to_s, @user.name)
       redirect_to @user, notice: 'User was successfully created.'
     else
       render :new

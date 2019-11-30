@@ -32,4 +32,12 @@ class Order < ApplicationRecord
 
     belongs_to :user
     belongs_to :company
+
+    def cached_user_name
+		Rails.cache.fetch('user_name_' + self.user_id.to_s) do 
+            Rails.logger.info '<<<CACHE NOT FOUND + DB CALL>>>' + 'user_id' + self.user_id.to_s
+            User.find(self.user_id).name
+        end
+	end
+
 end
