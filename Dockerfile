@@ -9,4 +9,6 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock /app/
 RUN bundle install
 
+RUN yarn add highcharts
+
 CMD ["/bin/bash"]
