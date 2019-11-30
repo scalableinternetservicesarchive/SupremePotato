@@ -23,7 +23,9 @@ class OrdersController < ApplicationController
 
       if @order.order_type == Order::BUY
         # Withhold balance
-        @order.user.decrement!(:balance, @order.price)
+        #use save! here to validate user's balance!
+        @order.user.balance -= @order.price
+        @order.user.save!
 
         matching = Order.where(
           company_id: @order.company_id,
@@ -121,7 +123,8 @@ class OrdersController < ApplicationController
 
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
-    Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
+    #Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
+    @order.errors[:balance] << ex.message
     render :new
   end
 
