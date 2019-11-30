@@ -23,6 +23,7 @@ class OrdersController < ApplicationController
 
       if @order.order_type == Order::BUY
         # Withhold balance
+        #use save! here to validate user's balance!
         @order.user.balance -= @order.price
         @order.user.save!
 
@@ -38,9 +39,9 @@ class OrdersController < ApplicationController
 
         if matching
           # Credit the seller
-          matching.user.balance += matching.price
+          matching.user.increment!(:balance, matching.price)
 
-          trade = Trade.new(
+          trade = Trade.create!(
             buy_order:  @order,
             sell_order: matching,
             price:      matching.price,
@@ -52,23 +53,20 @@ class OrdersController < ApplicationController
             user_id:    @order.user_id,
             company_id: @order.company_id
           ).first_or_create
-          buyer_holding.quantity += 1
+          buyer_holding.increment!(:quantity, 1)
 
           seller_holding = Holding.where(
             user_id:    matching.user_id,
             company_id: matching.company_id,
           ).first
-          seller_holding.quantity -= 1
+          seller_holding.decrement!(:quantity, 1)
 
           # Refund difference to buyer
-          @order.user.balance += @order.price - matching.price
-          @order.user.save!
+          @order.user.increment!(:balance, (@order.price - matching.price))
 
           # Save in DB
-          matching.user.save!
-          trade.save!
-          seller_holding.save!
-          buyer_holding.save!
+          # TODO: change order model to take advantage of rails ENUM! 
+          # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
           @order.update_attributes!(:status => Order::COMPLETED)
           matching.update_attributes!(:status => Order::COMPLETED)
         end
@@ -84,10 +82,22 @@ class OrdersController < ApplicationController
           'price ASC'
         ).first
 
-        if matching
-          @order.user.balance += matching.price
+        # Check Seller Holding Quantity!
+        seller_holding = Holding.where(
+          company_id: @order.company_id,
+          user_id:    @order.user_id,
+        ).first
 
-          trade = Trade.new(
+        if seller_holding.nil? || seller_holding.quantity == 0 
+          raise 'Invalid Holding Quantity To Create SELL Order.'
+        end
+
+        if matching
+          #@order.user.balance += matching.price
+          #@order.user.save!
+          @order.user.increment!(:balance, (@order.price - matching.price))
+
+          trade = Trade.create!(
             buy_order:  matching,
             sell_order: @order,
             price:      matching.price,
@@ -99,25 +109,22 @@ class OrdersController < ApplicationController
             user_id:    matching.user_id,
             company_id: matching.company_id
           ).first_or_create
-          buyer_holding.quantity += 1
 
-          seller_holding = Holding.where(
-            company_id: @order.company_id,
-            user_id:    @order.user_id,
-          ).first
-          seller_holding.quantity -= 1
+          buyer_holding.increment!(:quantity, 1)
+          seller_holding.decrement!(:quantity, 1)
 
-          @order.user.balance.save!
-          trade.save!
-          seller_holding.save!
-          buyer_holding.save!
+          # TODO: change order model to take advantage of rails ENUM! 
+          # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
           @order.update_attributes!(:status => Order::COMPLETED)
           matching.update_attributes!(:status => Order::COMPLETED)
         end # sell order else
       end # order-type if/end
     end # transaction
+
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
+    #Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
+    @order.errors[:balance] << ex.message
     render :new
   end
 

@@ -69,4 +69,6 @@ ActiveRecord::Schema.define(version: 2019_11_21_001917) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "trades", "orders", column: "buy_order_id"
+  add_foreign_key "trades", "orders", column: "sell_order_id"
 end
