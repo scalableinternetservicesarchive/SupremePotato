@@ -44,7 +44,8 @@ companies_list.each do |id, name, ticker, shares, price|
   )
 
   #Create #shares number of sales orders (because each order only allow one share atm)
-  shares.times {
+  #shares.times {
+  10000.times{
     Order.create(
       price:      price,
       company_id: id,
