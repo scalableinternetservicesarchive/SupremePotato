@@ -13,7 +13,6 @@
       <th>Req. Price</th>
       <th>User</th>
       <th>Status</th>
-      <th>Details</th>
       <th>Cancel Trade</th>
     </tr>
   </thead>
@@ -27,7 +26,6 @@
         <td>$<%= number_to_currency(order.price, delimiter: '', unit: '') %></td>
         <td><%= order.user.name %></td>
         <td><%= order.status_name %></td>
-        <td><%= link_to 'Show', order %></td>
         <td><%= link_to 'Cancel', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>

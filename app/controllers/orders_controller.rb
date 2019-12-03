@@ -6,10 +6,6 @@ class OrdersController < ApplicationController
     @orders = Order.where(filter).includes(:company, :user).order('id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
-  def show
-    @order = Order.includes(:company, :user).find(params[:id])
-  end
-
   def new
     order_params = params.permit(:company_id, :user_id)
     @order = Order.new(order_params)
@@ -65,7 +61,7 @@ class OrdersController < ApplicationController
           @order.user.increment!(:balance, (@order.price - matching.price))
 
           # Save in DB
-          # TODO: change order model to take advantage of rails ENUM! 
+          # TODO: change order model to take advantage of rails ENUM!
           # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
           @order.update_attributes!(:status => Order::COMPLETED)
           matching.update_attributes!(:status => Order::COMPLETED)
@@ -88,7 +84,7 @@ class OrdersController < ApplicationController
           user_id:    @order.user_id,
         ).first
 
-        if seller_holding.nil? || seller_holding.quantity == 0 
+        if seller_holding.nil? || seller_holding.quantity == 0
           raise 'Invalid Holding Quantity To Create SELL Order.'
         end
 
@@ -113,7 +109,7 @@ class OrdersController < ApplicationController
           buyer_holding.increment!(:quantity, 1)
           seller_holding.decrement!(:quantity, 1)
 
-          # TODO: change order model to take advantage of rails ENUM! 
+          # TODO: change order model to take advantage of rails ENUM!
           # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
           @order.update_attributes!(:status => Order::COMPLETED)
           matching.update_attributes!(:status => Order::COMPLETED)
