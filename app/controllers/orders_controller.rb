@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
 
   def index
     filter  = params.permit(:company_id, :user_id)
-    @orders = Order.where(filter).includes(:company, :user).order('id DESC').paginate(:page => params[:page], :per_page => 15)
+    @orders = Order.where(filter).includes(:company, :user).order('id DESC')
   end
 
   def show
