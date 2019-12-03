@@ -10,7 +10,7 @@
   <!-- Server side setup -->
   <servers>
     <!-- <server host="siddarth.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
-    <server host="siddarth9999.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="no-opt.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
@@ -55,6 +55,7 @@
 
   <options>
     <option name="global_ack_timeout" value="4000"></option>
+    <option name="file_server" id="userlist" value="userlist.csv"/>
   </options>
 
   <sessions>
@@ -84,6 +85,7 @@
     </session>
 
     <!-- Maybe remove this session later!--> 
+    <!-- No need to view CEO user here. We cannot hardcode CEO user id (had to revoke seed file)
     <session name="View CEO User" weight="1" type="ts_http">
       <setdynvars sourcetype="random_number" start="1" end="4">
         <var name="user_id" />
@@ -101,6 +103,7 @@
         </request>
       </transaction>
     </session>
+    --> 
 
     <session name="Create User" weight="1" type="ts_http">
       <transaction name="users_index">
@@ -120,8 +123,17 @@
         <var name="authenticity_token"/>
       </setdynvars>
 
+      <!--
       <setdynvars sourcetype="random_string" length="5">
         <var name="rndstring" />
+      </setdynvars>
+      --> 
+
+      <!-- 
+      http://tsung.erlang-projects.org/user_manual-current.html
+      --> 
+      <setdynvars sourcetype="file" fileid="userlist" delimiter="\n" order="random">
+        <var name="user_name" />
       </setdynvars>
 
       <transaction name="create_user">
@@ -130,7 +142,7 @@
           <http 
             url='/users' 
             method='POST' 
-            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=Usr-%%_rndstring%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%">
           </http>
         </request>
       </transaction>
@@ -155,7 +167,7 @@
       <for from="1" to="5" incr="1" var="counter">
         <thinktime value="2" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
 
-        <setdynvars sourcetype="random_number" start="0" end="500">
+        <setdynvars sourcetype="random_number" start="0" end="1000">
           <var name="amount" />
         </setdynvars>
 
@@ -208,7 +220,8 @@
 
       <!-- Each user has 3 chances to create order -->
       <for from="1" to="3" incr="1" var="order_counter">
-        <thinktime value="3" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
+        <thinktime value="4" random="true"></thinktime><!--DO NOT PUT THINKTIME IN TRANSACTION!-->
+        
         <setdynvars sourcetype="random_number" start="1" end="4">
           <var name="company_id" />
         </setdynvars>
@@ -217,9 +230,12 @@
           <var name="price" />
         </setdynvars>
 
-        <!-- Should we make users intend to 'buy' instead of 'sell'?--> 
-        <setdynvars sourcetype="random_number" start="1" end="2">
-          <var name="type" />
+        <!-- 
+          * if end < 4 ===> more likely to buy
+          * if end >= 4 ===> more likely to sell!
+        --> 
+        <setdynvars sourcetype="random_number" start="1" end="5">
+          <var name="type_chance" />
         </setdynvars>
 
         <transaction name="new_order">
@@ -235,13 +251,26 @@
         </setdynvars>
 
         <transaction name="create_order">
-          <request subst="true">
-            <http 
-              url='/users/%%_user_id%%/orders' 
-              method='POST' 
-              contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=%%_type%%&amp;order%5Buser_id%5D=%%_user_id%%">    
-            </http>
-          </request>
+          <!-- chances to buy --> 
+          <if var="type_chance" lt="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/orders' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Buser_id%5D=%%_user_id%%">    
+              </http>
+            </request>
+          </if>
+          <!-- changces to sell --> 
+          <if var="type_chance" gte="3">
+            <request subst="true">
+              <http 
+                url='/users/%%_user_id%%/orders' 
+                method='POST' 
+                contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Buser_id%5D=%%_user_id%%">    
+              </http>
+            </request>
+          </if>
         </transaction>
       </for> 
 
