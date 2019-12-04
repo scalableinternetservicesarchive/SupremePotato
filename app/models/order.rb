@@ -36,7 +36,7 @@ class Order < ApplicationRecord
   def matches
     match_type = (self.order_type == BUY)?  SELL        :  BUY
     match_cond = (self.order_type == BUY)? 'price <= ?' : 'price >= ?'
-    match_sort = (self.order_type == BUY)? 'price DESC' : 'price ASC'
+    match_sort = (self.order_type == BUY)? 'price ASC ' : 'price DESC'
 
     Order.where(
       company_id: self.company_id,
