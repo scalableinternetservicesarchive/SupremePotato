@@ -5,7 +5,7 @@ class Holding < ApplicationRecord
     def average_cost
 
         # Holdings are not deleted even if you sell all your stocks
-        if self.quantity == 0
+        if self.quantity < 1
             @average_cost = 0
         end
 
