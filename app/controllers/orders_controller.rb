@@ -23,61 +23,9 @@ class OrdersController < ApplicationController
         @order.user.balance -= @order.price
         @order.user.save!
 
-        matching = Order.where(
-          company_id: @order.company_id,
-          order_type: Order::SELL,
-          status:     Order::PENDING
-        ).where(
-          "price <= ?", @order.price
-        ).order(
-          'price DESC'
-        ).first
-
-        if matching
-          # Credit the seller
-          matching.user.increment!(:balance, matching.price)
-
-          trade = Trade.create!(
-            buy_order:  @order,
-            sell_order: matching,
-            price:      matching.price,
-            company_id: @order.company_id
-          )
-
-          # TODO: Be able to purchase / sell more than 1 share at a time
-          buyer_holding = Holding.where(
-            user_id:    @order.user_id,
-            company_id: @order.company_id
-          ).first_or_create
-          buyer_holding.increment!(:quantity, 1)
-
-          seller_holding = Holding.where(
-            user_id:    matching.user_id,
-            company_id: matching.company_id,
-          ).first
-          seller_holding.decrement!(:quantity, 1)
-
-          # Refund difference to buyer
-          @order.user.increment!(:balance, (@order.price - matching.price))
-
-          # Save in DB
-          # TODO: change order model to take advantage of rails ENUM!
-          # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
-          @order.update_attributes!(:status => Order::COMPLETED)
-          matching.update_attributes!(:status => Order::COMPLETED)
-        end
-      else
-        # Sell Order
-        matching = Order.where(
-          company_id: @order.company_id,
-          order_type: Order::BUY,
-          status:     Order::PENDING
-        ).where(
-          "price >= ?", @order.price
-        ).order(
-          'price ASC'
-        ).first
-
+        match = @order.matches.first
+        Trade.match!(@order, match, match.price) if match
+      else # Sell Order
         # Check Seller Holding Quantity!
         seller_holding = Holding.where(
           company_id: @order.company_id,
@@ -88,32 +36,8 @@ class OrdersController < ApplicationController
           raise 'Invalid Holding Quantity To Create SELL Order.'
         end
 
-        if matching
-          #@order.user.balance += matching.price
-          #@order.user.save!
-          @order.user.increment!(:balance, (@order.price - matching.price))
-
-          trade = Trade.create!(
-            buy_order:  matching,
-            sell_order: @order,
-            price:      matching.price,
-            company_id: @order.company_id
-          )
-
-          # TODO: Be able to purchase / sell more than 1 share at a time
-          buyer_holding = Holding.where(
-            user_id:    matching.user_id,
-            company_id: matching.company_id
-          ).first_or_create
-
-          buyer_holding.increment!(:quantity, 1)
-          seller_holding.decrement!(:quantity, 1)
-
-          # TODO: change order model to take advantage of rails ENUM!
-          # https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html
-          @order.update_attributes!(:status => Order::COMPLETED)
-          matching.update_attributes!(:status => Order::COMPLETED)
-        end # sell order else
+        match = @order.matches.first
+        Trade.match!(match, @order, match.price) if match
       end # order-type if/end
     end # transaction
 
