@@ -6,10 +6,6 @@ class OrdersController < ApplicationController
     @orders = Order.where(filter).includes(:company, :user).order('id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
-  def show
-    @order = Order.includes(:company, :user).find(params[:id])
-  end
-
   def new
     order_params = params.permit(:company_id, :user_id)
     @order = Order.new(order_params)

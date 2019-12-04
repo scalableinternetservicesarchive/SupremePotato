@@ -6,9 +6,8 @@ class User < ApplicationRecord
 
     private
     def valid_balance
-    	if self.balance < 0
-    		self.errors[:amount] << "Insufficient balance to support this action."
-    	end
+        if self.balance < 0
+            self.errors[:amount] << "Insufficient balance to support this action."
+        end
     end
-
 end

@@ -35,8 +35,8 @@
         <td><%= holding.company.ticker %></td>
         <td><%= holding.quantity %></td>
         <td>$<%= number_to_currency(holding.company.price, delimiter: '', unit: '') %></td>
-        <td>$0.00</td>
-        <td>$0.00</td>
+        <td>$<%= number_to_currency(holding.average_cost, delimiter: '', unit: '') %></td>
+        <td>$<%= number_to_currency(holding.quantity * (holding.company.price - holding.average_cost), delimiter: '', unit: '') %></td>
         <td>$<%= number_to_currency(holding.quantity * holding.company.price, delimiter: '', unit: '') %></td>
       </tr>
     <% end %>
@@ -63,7 +63,7 @@
         <td><%= trade.id %></td>
         <td><%= trade.cached_buy_order.cached_user_name %></td>
         <td><%= trade.cached_sell_order.cached_user_name %></td>
-        <td><%= trade.price %></td>
+        <td>$<%= number_to_currency(trade.price, delimiter: '', unit: '') %></td>
         <td><%= trade.updated_at %></td>
       </tr>
     <% end %>
@@ -71,4 +71,3 @@
 </table>
 <br><br>
 <%= will_paginate @trades %>
-
