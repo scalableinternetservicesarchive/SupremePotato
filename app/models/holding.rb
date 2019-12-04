@@ -12,7 +12,13 @@ class Holding < ApplicationRecord
                 sum + x.price
             }
 
-            @average_cost = fifo_buy_total / self.quantity
+            #temp fix just for tsung testing. need to review this!
+            if self.quantity < 1
+                @average_cost = 0 
+            else 
+                @average_cost = fifo_buy_total / self.quantity
+            end
+            
         end
         @average_cost
     end
