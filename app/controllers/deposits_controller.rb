@@ -1,7 +1,7 @@
 class DepositsController < ApplicationController
   def index
-    @deposits = Deposit.where(user_id: params[:user_id]).paginate(:page => params[:page], :per_page => 20)
-    @user = User.find(params[:user_id])
+    @user     = User.find(params[:user_id])
+    @deposits = @user.deposits.paginate(:page => params[:page], :per_page => 20)
   end
 
   def new

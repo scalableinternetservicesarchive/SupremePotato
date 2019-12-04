@@ -1,9 +1,15 @@
 class Trade < ApplicationRecord
+  belongs_to :buyer,      class_name: 'User'
+  belongs_to :seller,     class_name: 'User'
   belongs_to :buy_order,  class_name: 'Order'
   belongs_to :sell_order, class_name: 'Order'
   belongs_to :company
 
   def self.match!(buy, sell, price)
+    if buy.company_id != sell.company_id
+      raise "Company mismatch!"
+    end
+
     Holding.where(
       user_id:    buy.user_id,
       company_id: buy.company_id
@@ -18,13 +24,15 @@ class Trade < ApplicationRecord
     sell.user.increment!(:balance, price)
 
     self.create!(
+      buyer_id:   buy.user_id,
+      seller_id:  sell.user_id,
       buy_order:  buy,
       sell_order: sell,
       price:      price,
       company_id: buy.company_id
     )
 
-    buy.update_attributes!(:status => Order::COMPLETED)
+    buy.update_attributes!(:status  => Order::COMPLETED)
     sell.update_attributes!(:status => Order::COMPLETED)
   end
 
