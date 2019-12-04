@@ -8,6 +8,7 @@
         data: company.trades.group(:updated_at).maximum(:price)
       }
     },
+    curve: false,
     xtitle: "Time", 
     ytitle: "Price",
     library: {
