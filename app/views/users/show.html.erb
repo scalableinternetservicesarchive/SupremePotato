@@ -61,8 +61,8 @@
     <% @trades.each do |trade| %>
       <tr>
         <td><%= trade.id %></td>
-        <td><%= trade.cached_buy_order.cached_user_name %></td>
-        <td><%= trade.cached_sell_order.cached_user_name %></td>
+        <td><%= trade.buy_order.user.name %></td>
+        <td><%= trade.sell_order.user.name %></td>
         <td>$<%= number_to_currency(trade.price, delimiter: '', unit: '') %></td>
         <td><%= trade.updated_at %></td>
       </tr>
