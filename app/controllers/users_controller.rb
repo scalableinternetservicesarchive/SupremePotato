@@ -2,16 +2,16 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show]
 
   def index
-    @users = User.all.order('updated_at DESC').paginate(:page => params[:page], :per_page => 15)
+    @users = User.all.order('id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
   def show
-    @holdings = Holding.where(user_id: params[:id]).order('updated_at DESC')
+    @holdings = Holding.where(user_id: params[:id]).includes(:company).order('id DESC')
 
     # TODO: Watch out for low performance!
     @trades = Trade.joins([:buy_order, :sell_order]).where(
       'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
-    ).order('trades.updated_at DESC').paginate(:page => params[:page], :per_page => 15)
+    ).order('trades.id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
   def new
