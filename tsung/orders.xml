@@ -10,7 +10,8 @@
   <!-- Server side setup -->
   <servers>
     <!-- <server host="siddarth.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
-    <server host="chenz-deploy2.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <!-- <server host="chenz-deploy2.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
+    <server host="kevin.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
