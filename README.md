@@ -121,8 +121,13 @@ eb printenv [NameOfInstance]
 
 ### Web load testing using Tsung
 TBA~!  
-1. `launch_tsung.sh`
-2. ssh to the given ip address
+1. ssh into our EC2 instance with the provided secret key SupremePotato.pem
+```sh
+ssh -i ~/Downloads/SupremePotato.pem.txt SupremePotato@ec2.cs291.com
+```
+and run the following command to initialize Tsung Server
+ `launch_tsung.sh`
+2. the `launch_tsung.sh` should display your ssh commmand, as well as Tsung Dashboard link. ssh to the given address (The connection might be rejected. Please wait for 2~3 minutes).
 3. git clone/pull
 4. cd /tsung 
 5. modify URL
