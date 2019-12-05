@@ -6,4 +6,4 @@
 
 <%= render 'form', order: @order %>
 
-<%= link_to 'Back', orders_path %>
+<%= link_to 'Back', user_orders_path(current_user.id) %>

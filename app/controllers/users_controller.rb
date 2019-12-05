@@ -22,6 +22,7 @@ class UsersController < ApplicationController
     @user = User.where(name: user_params[:name]).first
 
     unless @user.nil?
+      log_in @user
       redirect_to @user, notice: 'User was successfully created.'
     else
       @user = User.new(user_params)
