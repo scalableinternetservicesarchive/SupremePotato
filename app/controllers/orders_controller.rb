@@ -18,24 +18,9 @@ class OrdersController < ApplicationController
       @order.save!
 
       if @order.order_type == Order::BUY
-        # Withhold balance
-        #use save! here to validate user's balance!
-        @order.user.balance -= @order.price
-        @order.user.save!
-
         match = @order.matches.first
         Trade.match!(@order, match, match.price) if match
       else # Sell Order
-        # Check Seller Holding Quantity!
-        seller_holding = Holding.where(
-          company_id: @order.company_id,
-          user_id:    @order.user_id,
-        ).first
-
-        if seller_holding.nil? || seller_holding.quantity == 0
-          raise 'Invalid Holding Quantity To Create SELL Order.'
-        end
-
         match = @order.matches.first
         Trade.match!(match, @order, match.price) if match
       end # order-type if/end
