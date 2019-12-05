@@ -28,6 +28,7 @@ class UsersController < ApplicationController
       @user.balance = 0
       if @user.save
         Rails.cache.write('user_name_' + @user.id.to_s, @user.name)
+        log_in @user
         redirect_to @user, notice: 'User was successfully created2.'
       else
         render :new

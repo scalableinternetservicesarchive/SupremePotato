@@ -7,14 +7,17 @@ class OrdersController < ApplicationController
   end
 
   def new
-    order_params = params.permit(:company_id, :user_id)
+    order_params = params.permit(:order_type, :company_id, :user_id)
+    # puts(params)
     @order = Order.new(order_params)
+    @order.user = current_user
   end
 
   def create
     ActiveRecord::Base.transaction do
       @order = Order.new(order_params)
       @order.status = Order::PENDING
+      @order.user = current_user
       @order.save!
 
       if @order.order_type == Order::BUY

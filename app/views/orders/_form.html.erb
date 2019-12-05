@@ -1,4 +1,7 @@
-<%= form_with(model: order, local: true) do |form| %>
+<%= form_with(model: @order, local: true) do |form| %>
+  <%= form.hidden_field :user_id %>
+  <%= form.hidden_field :company_id %>
+  <%= form.hidden_field :order_type %>
   <% if order.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
@@ -10,28 +13,22 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.radio_button :order_type, Order::BUY, :checked => true, :style =>'display: inline-block;'%>
-    <%= form.label :order_type, 'BUY', :style =>'display: inline-block;'%>
-    <%= form.radio_button :order_type, Order::SELL, :style =>'display: inline-block;'%>
-    <%= form.label :order_type, 'SELL', :style =>'display: inline-block;'%>
-  </div>
-
-  <div class="field">
-    <%= form.label :price %>
-    $<%= form.number_field :price, value: number_to_currency(form.object.price.to_f, delimiter: '', unit: ''), step: "0.01" %>
-  </div>
-
-  <div class="field">
-    <%= form.label :company_id %>
-    <%= form.collection_select(:company_id, Company.all, :id, :name) %>
-  </div>
-
-  <div class="field">
-    <%= form.label :user_id %>
-    <%= form.collection_select(:user_id, User.all, :id, :name) %>
-  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td>Company</td>
+        <td><%= @order.company.name %></td>
+      </tr>
+      <tr>
+        <td>User</td>
+        <td><%= current_user.name %></td>
+      </tr>
+      <tr>
+        <td>Price</td>
+        <td><%= form.number_field :price, value: number_to_currency(form.object.price.to_f, delimiter: '', unit: ''), step: "0.01" %></td>
+      </tr>
+    </tbody>
+  </table>  
 
   <div class="actions">
     <%= form.submit %>

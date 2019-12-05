@@ -1,29 +1,61 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Companies</h1>
+<div class="curve">
+  <%= line_chart @companies_curve.map {|company| {
+        name: company.name, 
+        data: company.trades.group(:updated_at).maximum(:price)
+      }
+    },
+    curve: false,
+    xtitle: "Time", 
+    ytitle: "Price",
+    library: {
+      plotOptions: {
+          series: {
+              lineWidth: 1
+          }
+      },
+      chart: {
+        zoomType: 'x',
+        position: {
+            x: 0,
+            y: -30
+        }
+      }
+    }
+  %>
+</div>
 
-<table>
-  <thead>
+<table class="table table-striped">
+  <thead class="thead-dark">
     <tr>
-      <th>Name</th>
-      <th>Ticker</th>
-      <th>Shares</th>
-      <th>Current Price</th>
-      <th>Trades</th>
-      <th>Orders</th>
+      <th scope="col">Name</th>
+      <th scope="col">Ticker</th>
+      <th scope="col">Shares</th>
+      <th scope="col">Current Price</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
     </tr>
   </thead>
-
   <tbody>
     <% @companies.each do |company| %>
       <tr>
         <td><%= company.name %></td>
         <td><%= company.ticker %></td>
         <td><%= company.shares %></td>
-        <td>$<%= number_to_currency(company.price, delimiter: '', unit: '') %>
-        </td>
-        <td><%= link_to 'Trades', company %></td>
-        <td><%= link_to 'Orders', company_orders_path(company.id) %></td>
+        <td>$<%= number_to_currency(company.price, delimiter: '', unit: '') %></td>
+        <td><%= link_to 'Trades', company, class: "underline" %></td>
+        <td><%= link_to 'Orders', company_orders_path(company.id), class: "underline" %></td>
+        <% if logged_in? %>
+          <td><%= link_to 'Buy', new_order_path(company_id: company.id, order_type: Order::BUY), class: "btn btn-outline-dark" %></td>
+          <td><%= link_to 'Sell', new_order_path(company_id: company.id, order_type: Order::SELL), class: "btn btn-outline-dark" %></td>
+        <% else %>
+          <td><%= link_to 'Buy', login_path %></td>
+          <td><%= link_to 'Sell', login_path %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
