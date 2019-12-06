@@ -1,4 +1,6 @@
 class Trade < ApplicationRecord
+  belongs_to :buyer,      class_name: 'User'
+  belongs_to :seller,     class_name: 'User'
   belongs_to :buy_order,  class_name: 'Order'
   belongs_to :sell_order, class_name: 'Order'
   belongs_to :company
@@ -22,6 +24,8 @@ class Trade < ApplicationRecord
     sell.user.increment!(:balance, paid)
 
     self.create!(
+      buyer_id:   buy.user_id,
+      seller_id:  sell.user_id,
       buy_order:  buy,
       sell_order: sell,
       quantity:   quantity,
@@ -38,17 +42,11 @@ class Trade < ApplicationRecord
     sell.save!
   end
 
-  def cached_buy_order
-    Rails.cache.fetch('order_id' + self.buy_order_id.to_s) do
-      Rails.logger.debug '<<<CACHE NOT FOUND + DB CALL>>>' + 'order_id' + self.buy_order_id.to_s
-      self.buy_order
-    end
+  def buyer_name
+    Rails.cache.fetch("user_name_#{self.buyer_id}") {self.buyer.name}
   end
 
-  def cached_sell_order
-    Rails.cache.fetch('order_id' + self.sell_order_id.to_s) do
-      Rails.logger.debug '<<<CACHE NOT FOUND + DB CALL>>>' + 'order_id' + self.sell_order_id.to_s
-      self.sell_order
-    end
+  def seller_name
+    Rails.cache.fetch("user_name_#{self.seller_id}") {self.seller.name}
   end
 end

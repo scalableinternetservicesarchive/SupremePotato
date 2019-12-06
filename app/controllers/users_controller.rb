@@ -2,16 +2,12 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show]
 
   def index
-    @users = User.all.order('id DESC').paginate(:page => params[:page], :per_page => 15)
+    @users = User.all.order(:name).paginate(:page => params[:page], :per_page => 15)
   end
 
   def show
-    @holdings = Holding.where(user_id: params[:id]).includes(:company).order('id DESC')
-
-    # TODO: Watch out for low performance!
-    @trades = Trade.joins([:buy_order, :sell_order]).where(
-      'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
-    ).order('trades.id DESC').paginate(:page => params[:page], :per_page => 15)
+    @holdings = @user.holdings.includes(:company)
+    @trades   = @user.trades.order('id DESC').paginate(:page => params[:page], :per_page => 15)
   end
 
   def new
@@ -27,7 +23,7 @@ class UsersController < ApplicationController
       @user = User.new(user_params)
       @user.balance = 0
       if @user.save
-        Rails.cache.write('user_name_' + @user.id.to_s, @user.name)
+        Rails.cache.write("user_name_#{@user.id}", @user.name)
         redirect_to @user, notice: 'User was successfully created2.'
       else
         render :new

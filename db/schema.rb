@@ -61,7 +61,11 @@ ActiveRecord::Schema.define(version: 2019_12_04_223603) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity", default: 1, null: false
+    t.integer "buyer_id"
+    t.integer "seller_id"
+    t.index ["buyer_id", "id"], name: "index_trades_on_buyer_id_and_id"
     t.index ["company_id"], name: "index_trades_on_company_id"
+    t.index ["seller_id", "id"], name: "index_trades_on_seller_id_and_id"
   end
 
   create_table "users", force: :cascade do |t|

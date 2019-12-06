@@ -11,15 +11,13 @@ class Holding < ApplicationRecord
 
         unless @average_cost
             # Use FIFO in averaging buys, ignoring first N sells
-            num_sells = Trade.where(company_id: self.company_id).joins(:sell_order).where('orders.user_id' => self.user_id).count
+            sells = self.user.sells.where(company_id: self.company_id)
+            buys  = self.user.buys.where(company_id: self.company_id).order('id DESC')
 
-            # Successful buys
-            fifo_buy_total = Trade.where(company_id: self.company_id).joins(:buy_order).where('orders.user_id' => self.user_id).order('id DESC').limit(9223372036854775807).offset(num_sells).inject(0) { |sum, x|
-                sum + x.price
-            }
-
-            @average_cost = fifo_buy_total / self.quantity
+            fifo_buy_total = buys.offset(sells.count).limit(2**60).sum(:price)
+            @average_cost  = fifo_buy_total / self.quantity
         end
+
         @average_cost
     end
 end
