@@ -11,6 +11,8 @@
   <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
 </p>
 
+<%= link_to 'Deposit', new_user_deposit_path(current_user.id), class: "btn btn-outline-secondary" %>
+
 <br><br>
 <h2>Banking History</h2>
 

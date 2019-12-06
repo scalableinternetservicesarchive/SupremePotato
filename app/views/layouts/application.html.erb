@@ -32,7 +32,8 @@
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <%= link_to 'Orders', user_orders_path(current_user.id), class: "dropdown-item" %>
                 <%= link_to 'Portfolio', user_path(current_user.id), class: "dropdown-item" %>
-                <%= link_to 'Deposit', new_user_deposit_path(current_user.id), class: "dropdown-item" %>
+
+                <%= link_to 'Deposit', user_deposits_path(current_user.id), class: "dropdown-item" %>
                 <%= link_to 'Logout', logout_path, method: :delete, class: "dropdown-item" %>
               </div>
             </div>
