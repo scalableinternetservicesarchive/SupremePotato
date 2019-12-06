@@ -11,7 +11,33 @@
 </p>
 
 <br><br>
-<h2>Total Portfolio Worth</h2>
+<h2>Profit</h2>
+<div class="curve">
+  <%= line_chart [
+      {
+        name: "Profit", 
+        data: @profit_history
+      }
+    ],
+    curve: false,
+    xtitle: "Time", 
+    ytitle: "Price",
+    library: {
+      plotOptions: {
+          series: {
+              lineWidth: 1
+          }
+      },
+      chart: {
+        zoomType: 'x',
+        position: {
+            x: 0,
+            y: -30
+        }
+      }
+    }
+  %>
+</div>
 
 <h3>Stocks</h3>
 <table class="table table-striped">
