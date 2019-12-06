@@ -31,10 +31,6 @@ class OrdersController < ApplicationController
     end # transaction
 
     redirect_to @order, notice: 'Order was successfully created.'
-  rescue Exception => ex
-    #Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
-    @order.errors[:balance] << ex.message
-    render :new
   end
 
   def destroy
