@@ -59,7 +59,7 @@ a {
 		.repeat-logo {
 			width: 100%;
 			height: 10px;
-			background: url('/assets/logo.jpg');
+			background: image_url('logo.jpg');
   			background-repeat: repeat space;
   			background-size: 10px 10px;
 		}
