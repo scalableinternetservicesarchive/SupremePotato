@@ -18,11 +18,15 @@ class OrdersController < ApplicationController
       @order.save!
 
       if @order.order_type == Order::BUY
-        match = @order.matches.first
-        Trade.match!(@order, match, match.price) if match
+        @order.matches.each do |match|
+          Trade.match!(@order, match, match.price)
+          break if @order.quantity == 0
+        end
       else # Sell Order
-        match = @order.matches.first
-        Trade.match!(match, @order, match.price) if match
+        @order.matches.each do |match|
+          Trade.match!(match, @order, match.price)
+          break if @order.quantity == 0
+        end
       end # order-type if/end
     end # transaction
 
@@ -34,7 +38,16 @@ class OrdersController < ApplicationController
   end
 
   def destroy
-    @order.update_attributes(:status => Order::CANCELED)
+    if @order.status != Order::PENDING
+      redirect_to orders_url, notice: 'Cannot cancel a completed order.'
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      @order.update_attributes(:status => Order::CANCELED)
+      @order.user.increment(:balance, @order.quantity * @order.price)
+    end
+
     redirect_to orders_url, notice: 'Order was successfully canceled.'
   end
 
@@ -46,6 +59,6 @@ class OrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
-      params.require(:order).permit(:order_type, :price, :company_id, :user_id)
+      params.require(:order).permit(:order_type, :quantity, :price, :company_id, :user_id)
     end
 end

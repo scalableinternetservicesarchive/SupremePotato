@@ -10,6 +10,7 @@
       <th>Order Id</th>
       <th>Order Type</th>
       <th>Company</th>
+      <th>Quantity</th>
       <th>Req. Price</th>
       <th>User</th>
       <th>Status</th>
@@ -23,10 +24,11 @@
         <td><%= order.id %></td>
         <td><%= order.order_name %></td>
         <td><%= order.company.name %></td>
+        <td><%= order.quantity %></td>
         <td>$<%= number_to_currency(order.price, delimiter: '', unit: '') %></td>
         <td><%= order.user.name %></td>
         <td><%= order.status_name %></td>
-        <td><%= link_to 'Cancel', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Cancel', order, method: :delete, data: { confirm: 'Are you sure?' } if order.status == Order::PENDING %></td>
       </tr>
     <% end %>
   </tbody>
