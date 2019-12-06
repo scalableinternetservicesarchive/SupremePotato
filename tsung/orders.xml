@@ -160,7 +160,7 @@
           <http
             url='/users/%%_user_id%%/orders'
             method='POST'
-            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Bquantity%5D=%%_quantity%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Bquantity%5D=%%_quantity%%&amp;order%5Buser_id%5D=%%_user_id%%">
           </http>
         </request>
       </transaction>
@@ -216,7 +216,7 @@
           <http
             url='/users/%%_user_id%%/orders'
             method='POST'
-            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Bquantity%5D=%%_quantity%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Bquantity%5D=%%_quantity%%&amp;order%5Buser_id%5D=%%_user_id%%">
           </http>
         </request>
       </transaction>
