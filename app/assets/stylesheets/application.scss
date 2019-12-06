@@ -40,7 +40,7 @@ a {
  	background-color: #a6bae0;
  }
 .top_nav {
-	height: 100px;
+	height: 150px;
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
@@ -53,8 +53,9 @@ a {
 		flex: 1;
 		// border-bottom: 2px solid #888;
 		.title {
-			font-size: 36px;
+			font-size: 44px;
 			color: #222;
+			padding-bottom: 20px;
 		}
 		.repeat-logo {
 			width: 100%;
@@ -72,17 +73,17 @@ a {
 		align-items: flex-end;
 		.bull-container {
 			position: relative;
-			width: 100px;
-			height: 100px;
+			width: 150px;
+			height: 150px;
 			.bull {
-				width: 100px;
-				height: 100px;
+				width: 150px;
+				height: 150px;
 			}
 			.text-on-image {
 				font-family: "Courier New";
 				font-weight: bold;
 				position: absolute;
-				bottom: 10px;
+				bottom: 20px;
 				margin: 0;
 				text-align: center;
 				width: 100%;
