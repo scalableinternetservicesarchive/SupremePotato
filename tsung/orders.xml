@@ -61,6 +61,7 @@
     <session name="View User" weight="1" type="ts_http">
       <transaction name="new_user">
         <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="authenticity_token"/>
           <http url='/users/new'></http>
         </request>
@@ -77,6 +78,7 @@
       <thinktime value="2" random="true"></thinktime>
       <transaction name="create_user">
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
           <http
             url='/users'
@@ -111,6 +113,7 @@
     <session name="Buy" weight="1" type="ts_http">
       <transaction name="new_user">
         <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="authenticity_token"/>
           <http url='/users/new'></http>
         </request>
@@ -127,6 +130,7 @@
       <thinktime value="2" random="true"></thinktime>
       <transaction name="create_user">
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
           <http method='POST' url='/users' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%"></http>
         </request>
@@ -139,6 +143,7 @@
       <thinktime value="1" random="true"></thinktime>
       <transaction name="new_order">
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <!-- <dyn_variable name="authenticity_token"/> Somehow it cannot be obtained-->
           <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
           <http url='/users/%%_user_id%%/orders/new'></http>
@@ -155,7 +160,7 @@
           <http
             url='/users/%%_user_id%%/orders'
             method='POST'
-            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%quantity%5D=%%_quantity%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Bquantity%5D=%%_quantity%%">
           </http>
         </request>
       </transaction>
@@ -164,6 +169,7 @@
     <session name="Sell" weight="1" type="ts_http">
       <transaction name="new_user">
         <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="authenticity_token"/>
           <http url='/users/new'></http>
         </request>
@@ -180,6 +186,7 @@
       <thinktime value="2" random="true"></thinktime>
       <transaction name="create_user">
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
           <http method='POST' url='/users' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%"></http>
         </request>
@@ -192,6 +199,7 @@
       <thinktime value="1" random="true"></thinktime>
       <transaction name="new_order">
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <!-- <dyn_variable name="authenticity_token"/> Somehow it cannot be obtained-->
           <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
           <http url='/users/%%_user_id%%/orders/new'></http>
@@ -208,7 +216,7 @@
           <http
             url='/users/%%_user_id%%/orders'
             method='POST'
-            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%quantity%5D=%%_quantity%%">
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Bquantity%5D=%%_quantity%%">
           </http>
         </request>
       </transaction>
