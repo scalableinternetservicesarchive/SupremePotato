@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_192013) do
+ActiveRecord::Schema.define(version: 2019_12_04_223603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_192013) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "order_type"
+    t.integer "quantity", default: 1, null: false
     t.index ["company_id"], name: "index_orders_on_company_id"
     t.index ["status", "order_type", "company_id", "price"], name: "index_orders_on_status_and_order_type_and_company_id_and_price"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_192013) do
     t.decimal "price", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity", default: 1, null: false
     t.index ["company_id"], name: "index_trades_on_company_id"
   end
 
