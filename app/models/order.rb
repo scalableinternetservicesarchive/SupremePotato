@@ -9,6 +9,11 @@ class Order < ApplicationRecord
   BUY  = 1
   SELL = 2
 
+  validates_inclusion_of    :order_type, in: [BUY, SELL]
+  validates_inclusion_of    :status,     in: [PENDING, COMPLETED, CANCELED]
+  validates_numericality_of :quantity,   greater_than: 0, on: :create
+  validates_numericality_of :price,      greater_than: 0
+
   def status_name
     case self.status
     when PENDING
