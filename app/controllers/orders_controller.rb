@@ -43,11 +43,7 @@ class OrdersController < ApplicationController
       return
     end
 
-    ActiveRecord::Base.transaction do
-      @order.update_attributes(:status => Order::CANCELED)
-      @order.user.increment(:balance, @order.quantity * @order.price)
-    end
-
+    @order.update_attributes(:status => Order::CANCELED)
     redirect_to orders_url, notice: 'Order was successfully canceled.'
   end
 
