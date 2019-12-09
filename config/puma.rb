@@ -4,7 +4,7 @@
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 #
-threads_count = 25
+threads_count = 5
 threads threads_count, threads_count
 
 #threads 5, 5
@@ -25,7 +25,7 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 #
 #workers ENV.fetch("WEB_CONCURRENCY") { 4 }
 
-workers 8
+workers 72
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
