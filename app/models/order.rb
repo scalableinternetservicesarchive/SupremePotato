@@ -36,7 +36,25 @@ class Order < ApplicationRecord
   def matches
     match_type = (self.order_type == BUY)?  SELL        :  BUY
     match_cond = (self.order_type == BUY)? 'price <= ?' : 'price >= ?'
-    match_sort = (self.order_type == BUY)? 'price ASC ' : 'price DESC'
+    match_sort = (self.order_type == BUY)? 'price ASC' : 'price DESC'
+
+
+    #pr = Order.where(
+    #  company_id: self.company_id,
+    #  order_type: match_type,
+    #  status:     PENDING
+    #).where(
+    #  match_cond, self.price
+    #).minimum('price')
+    
+    #Rails.logger.info '<<<MANUAL-LOG>>>: min price: ' + pr.to_s + " - !!!! - " + match_sort
+
+    #Order.where(
+    #  company_id: self.company_id,
+    #  order_type: match_type,
+    #  status:     PENDING, 
+    #  price: pr
+    #)
 
     Order.where(
       company_id: self.company_id,
