@@ -17,7 +17,7 @@
 
 <p>
   <strong>Req. Total Price:</strong>
-  $<%= number_to_currency(@order.price * @order.initial, delimiter: '', unit: '') %>
+  $<%= number_to_currency(@order.price * (@order.initial || 0), delimiter: '', unit: '') %>
 </p>
 
 <p>
