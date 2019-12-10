@@ -9,14 +9,39 @@
   <strong>Balance:</strong>
   <td>$<%= number_to_currency(@user.balance, delimiter: '', unit: '') %></td>
 </p>
-<%= link_to 'Deposits', user_deposits_path(@user.id) %>
-<%= link_to 'Back', users_path %>
+
 <br><br>
-<h2>Total Portfolio Worth</h2>
+<h2>Profit</h2>
+<div class="curve">
+  <%= line_chart [
+      {
+        name: "Profit", 
+        data: @profit_history
+      }
+    ],
+    curve: false,
+    xtitle: "Time", 
+    ytitle: "Price",
+    library: {
+      plotOptions: {
+          series: {
+              lineWidth: 1
+          }
+      },
+      chart: {
+        zoomType: 'x',
+        position: {
+            x: 0,
+            y: -30
+        }
+      }
+    }
+  %>
+</div>
 
 <h3>Stocks</h3>
-<table>
-  <thead>
+<table class="table table-striped">
+  <thead class="thead-dark">
     <tr>
       <th>Name</th>
       <th>Symbol</th>
@@ -25,6 +50,7 @@
       <th>Average Cost</th>
       <th>Total Return</th>
       <th>Equity</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -38,6 +64,8 @@
         <td>$<%= number_to_currency(holding.average_cost, delimiter: '', unit: '') %></td>
         <td>$<%= number_to_currency(holding.quantity * (holding.company.price - holding.average_cost), delimiter: '', unit: '') %></td>
         <td>$<%= number_to_currency(holding.quantity * holding.company.price, delimiter: '', unit: '') %></td>
+        <td><%= link_to 'Sell', new_order_path(company_id: holding.company.id, order_type: Order::SELL), class: "btn btn-outline-dark" %>
+        </td>
       </tr>
     <% end %>
   </tbody>
@@ -46,26 +74,28 @@
 <br><br>
 
 <h3>Trade Records</h3>
-<table>
-  <thead>
+<table class="table">
+  <thead class="thead-dark">
     <tr>
       <th>ID</th>
       <th>Buyer</th>
       <th>Seller</th>
       <th>Quantity</th>
       <th>Price</th>
-      <th>Date</th>
+      <th>Company</th>
+      <th>Updated At</th>
     </tr>
   </thead>
 
   <tbody>
     <% @trades.each do |trade| %>
-      <tr>
+      <tr class="<%= trade.cached_buy_order.cached_user_name == current_user.name ? 'buy' : 'sell' %>">
         <td><%= trade.id %></td>
         <td><%= trade.cached_buy_order.cached_user_name %></td>
         <td><%= trade.cached_sell_order.cached_user_name %></td>
         <td><%= trade.quantity %></td>
         <td>$<%= number_to_currency(trade.price, delimiter: '', unit: '') %></td>
+        <td><%= trade.company.name %></td>
         <td><%= trade.updated_at %></td>
       </tr>
     <% end %>

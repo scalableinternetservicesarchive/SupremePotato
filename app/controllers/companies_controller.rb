@@ -3,6 +3,7 @@ class CompaniesController < ApplicationController
 
   def index
     @companies = Company.all
+    @companies_curve = Company.includes(:trades)
   end
 
   def show

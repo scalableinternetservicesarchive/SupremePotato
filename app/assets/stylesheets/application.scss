@@ -1,0 +1,95 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+ @import "bootstrap";
+
+h1 {
+	font-size: 28px;
+}
+.curve {
+	padding: 30px 0;
+}
+.underline {
+	text-decoration: underline;
+}
+a {
+    text-decoration: none;
+}
+.table th,
+.table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  text-align: center;
+ }
+ .buy {
+ 	background-color: #a8c7a7;
+ }
+ .sell {
+ 	background-color: #a6bae0;
+ }
+.top_nav {
+	height: 100px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	padding-top: 10px;
+	margin-bottom: 30px;
+	.left {
+		a:-webkit-any-link {
+    		text-decoration: none;
+		}
+		flex: 1;
+		// border-bottom: 2px solid #888;
+		.title {
+			font-size: 36px;
+			color: #222;
+		}
+		.repeat-logo {
+			width: 100%;
+			height: 10px;
+			background: image_url('logo.jpg');
+  			background-repeat: repeat space;
+  			background-size: 10px 10px;
+		}
+	}
+	.menu {
+		margin-left: 20px;
+		height: 100%;
+		align-self: flex-end;
+		display: flex;
+		align-items: flex-end;
+		.bull-container {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			.bull {
+				width: 100px;
+				height: 100px;
+			}
+			.text-on-image {
+				font-family: "Courier New";
+				font-weight: bold;
+				position: absolute;
+				bottom: 10px;
+				margin: 0;
+				text-align: center;
+				width: 100%;
+				padding: 0 8px;
+			}
+		}
+		
+	}
+}
+

@@ -12,6 +12,28 @@ class UsersController < ApplicationController
     @trades = Trade.joins([:buy_order, :sell_order]).where(
       'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
     ).order('trades.id DESC').paginate(:page => params[:page], :per_page => 15)
+
+    deposits = Deposit.where(user_id: params[:user_id])
+
+    queues = {}
+    Company.all.map do |x|
+      queues[x.id] = []
+    end
+    profit = 0
+    @profit_history = @trades.sort_by(&:created_at).map do |x|
+      if x.sell_order.user_id == @user.id
+        queue = queues[x.company.id]
+        average_cost = queue.sum(&:price) / queue.length
+        queue.shift
+        profit += x.price - average_cost
+      else
+        queues[x.company.id].push(x)
+      end
+      [x.created_at, profit.round(2)]
+    end
+
+    @profit_history = [[@user.created_at, 0]] + @profit_history
+
   end
 
   def new
@@ -22,12 +44,14 @@ class UsersController < ApplicationController
     @user = User.where(name: user_params[:name]).first
 
     unless @user.nil?
+      log_in @user
       redirect_to @user, notice: 'User was successfully created.'
     else
       @user = User.new(user_params)
       @user.balance = 0
       if @user.save
         Rails.cache.write('user_name_' + @user.id.to_s, @user.name)
+        log_in @user
         redirect_to @user, notice: 'User was successfully created2.'
       else
         render :new

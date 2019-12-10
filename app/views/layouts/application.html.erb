@@ -11,15 +11,40 @@
   </head>
 
   <body>
-    <div class="nav-bar">
-      <ul>
-        <li><%= link_to 'Companies', companies_path %></li>
-        <li><%= link_to 'Users', users_path %></li>
-        <li><%= link_to 'Orders', orders_path %></li>
-        <li><%= link_to 'Curve', curve_index_path %></li>
-        <li class="logo"><%= link_to 'SupremePotato', root_path %></li>
-      </ul>
+    <div class="container">
+      <div class="top_nav">
+        <div class="left">
+          <%= link_to root_path do %>
+            <p class="title">SupremePotato Trading</p>
+            <div class="repeat-logo"></div>
+          <% end %> 
+        </div>
+
+        <div class="menu">
+          <% if logged_in? %>
+            <div class="dropdown">
+              <div id="dropdownMenuLink" data-toggle="dropdown" class="bull-container">
+                <%= image_tag "bull.jpg", :alt => "logo", :class => "bull" %>
+                <p class="text-on-image underline text-truncate">Welcome <%= @current_user.name %>!</p>
+              </div>
+
+              
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <%= link_to 'Orders', user_orders_path(current_user.id), class: "dropdown-item" %>
+                <%= link_to 'Portfolio', user_path(current_user.id), class: "dropdown-item" %>
+
+                <%= link_to 'Deposit', user_deposits_path(current_user.id), class: "dropdown-item" %>
+                <%= link_to 'Logout', logout_path, method: :delete, class: "dropdown-item" %>
+              </div>
+            </div>
+
+          <% else %>
+            <%= link_to 'Login/SignUp', login_path, class: "underline login" %>
+          <% end %>
+        </div>
+      </div>
+      <%= yield %>
     </div>
-    <%= yield %>
+    
   </body>
 </html>
