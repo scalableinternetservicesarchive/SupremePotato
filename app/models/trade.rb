@@ -3,7 +3,7 @@ class Trade < ApplicationRecord
   belongs_to :sell_order, class_name: 'Order'
   belongs_to :company
 
-  def self.match!(buy, sell, price, buy_user, sell_user)
+  def self.match!(buy, sell, price)
     #Holding.where(
     #  user_id:    buy.user_id,
     #  company_id: buy.company_id
@@ -18,10 +18,8 @@ class Trade < ApplicationRecord
       company_id: sell.company_id,
     ).first.decrement!(:quantity, 1)
 
-    #buy.user.increment!(:balance, buy.price - price)
-    #sell.user.increment!(:balance, price)
-    buy_user.increment!(:balance, buy.price - price)
-    sell_user.increment!(:balance, price)
+    buy.user.increment!(:balance, buy.price - price)
+    sell.user.increment!(:balance, price)
 
     self.create!(
       buy_order:  buy,
