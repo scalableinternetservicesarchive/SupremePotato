@@ -4,28 +4,38 @@ class Trade < ApplicationRecord
   belongs_to :company
 
   def self.match!(buy, sell, price)
+    quantity = [buy.quantity, sell.quantity].min
+    paid     = quantity * price
+
     Holding.where(
       user_id:    buy.user_id,
       company_id: buy.company_id
-    ).first_or_create.increment!(:quantity, 1)
+    ).first_or_create.increment!(:quantity, quantity)
 
     Holding.where(
       user_id:    sell.user_id,
       company_id: sell.company_id,
-    ).first.decrement!(:quantity, 1)
 
-    buy.user.increment!(:balance, buy.price - price)
-    sell.user.increment!(:balance, price)
+    ).first_or_create.decrement!(:quantity, quantity)
+
+    buy.user.decrement!(:balance, paid)
+    sell.user.increment!(:balance, paid)
 
     self.create!(
       buy_order:  buy,
       sell_order: sell,
+      quantity:   quantity,
       price:      price,
       company_id: buy.company_id
     )
 
-    buy.update_attributes!(:status => Order::COMPLETED)
-    sell.update_attributes!(:status => Order::COMPLETED)
+    buy.quantity -= quantity
+    buy.status = Order::COMPLETED if buy.quantity == 0
+    buy.save!
+
+    sell.quantity -= quantity
+    sell.status = Order::COMPLETED if sell.quantity == 0
+    sell.save!
   end
 
   def cached_buy_order

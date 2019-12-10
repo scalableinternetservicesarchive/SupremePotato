@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug">
+
+  <!-- Client side setup -->
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers='15000'/>
+  </clients>
+
+  <!-- Server side setup -->
+  <servers>
+    <!-- <server host="siddarth.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
+    <!-- <server host="chenz-deploy2.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server> -->
+    <server host="kevin.phtsmfeyep.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="1"   unit="second"></users></arrivalphase>
+    <arrivalphase phase="2" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="2"   unit="second"></users></arrivalphase>
+    <arrivalphase phase="3" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="4"   unit="second"></users></arrivalphase>
+    <arrivalphase phase="4" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="8"   unit="second"></users></arrivalphase>
+    <arrivalphase phase="5" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="16"  unit="second"></users></arrivalphase>
+    <arrivalphase phase="6" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="32"  unit="second"></users></arrivalphase>
+    <arrivalphase phase="7" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="64"  unit="second"></users></arrivalphase>
+    <arrivalphase phase="8" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="128" unit="second"></users></arrivalphase>
+    <arrivalphase phase="9" duration="30" unit="second" wait_all_sessions_end="true"><users arrivalrate="256" unit="second"></users></arrivalphase>
+  </load>
+
+  <options>
+    <option name="global_ack_timeout" value="4000"></option>
+    <option name="file_server" id="userlist" value="userlist.csv"/>
+  </options>
+
+  <sessions>
+    <session name="View Company" weight="1" type="ts_http">
+      <setdynvars sourcetype="random_number" start="1" end="4">
+        <var name="company_id" />
+      </setdynvars>
+
+      <transaction name="companies">
+        <request>
+          <http url='/companies'></http>
+        </request>
+      </transaction>
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="view_company_trades">
+        <request subst="true">
+          <http url='/companies/%%_company_id%%'></http>
+        </request>
+      </transaction>
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="view_company_orders">
+        <request subst="true">
+          <http url='/companies/%%_company_id%%/orders'></http>
+        </request>
+      </transaction>
+    </session>
+
+    <session name="View User" weight="1" type="ts_http">
+      <transaction name="new_user">
+        <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <setdynvars sourcetype="file" fileid="userlist" delimiter="\n" order="random">
+        <var name="user_name" />
+      </setdynvars>
+
+      <thinktime value="2" random="true"></thinktime>
+      <transaction name="create_user">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
+          <http
+            url='/users'
+            method='POST'
+            contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%">
+          </http>
+        </request>
+      </transaction>
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="view_user">
+        <request subst="true">
+          <http url='/users/%%_user_id%%'></http>
+        </request>
+      </transaction>
+
+      <!-- <thinktime value="1" random="true"></thinktime>
+      <transaction name="view_user_trades">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/trades'></http>
+        </request>
+      </transaction> -->
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="view_user_orders">
+        <request subst="true">
+          <http url='/users/%%_user_id%%/orders'></http>
+        </request>
+      </transaction>
+    </session>
+
+    <session name="Buy" weight="1" type="ts_http">
+      <transaction name="new_user">
+        <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <setdynvars sourcetype="file" fileid="userlist" delimiter="\n" order="random">
+        <var name="user_name" />
+      </setdynvars>
+
+      <thinktime value="2" random="true"></thinktime>
+      <transaction name="create_user">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
+          <http method='POST' url='/users' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%"></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="random_number" start="1"   end="4"  ><var name="company_id" /></setdynvars>
+      <setdynvars sourcetype="random_number" start="1"   end="10" ><var name="quantity" /></setdynvars>
+      <setdynvars sourcetype="random_number" start="100" end="300"><var name="price" /></setdynvars>
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="new_order">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <!-- <dyn_variable name="authenticity_token"/> Somehow it cannot be obtained-->
+          <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+          <http url='/users/%%_user_id%%/orders/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <thinktime value="4" random="true"></thinktime>
+      <transaction name="create_order">
+        <request subst="true">
+          <http
+            url='/users/%%_user_id%%/orders'
+            method='POST'
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=1&amp;order%5Bquantity%5D=%%_quantity%%&amp;order%5Buser_id%5D=%%_user_id%%">
+          </http>
+        </request>
+      </transaction>
+    </session>
+
+    <session name="Sell" weight="1" type="ts_http">
+      <transaction name="new_user">
+        <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <setdynvars sourcetype="file" fileid="userlist" delimiter="\n" order="random">
+        <var name="user_name" />
+      </setdynvars>
+
+      <thinktime value="2" random="true"></thinktime>
+      <transaction name="create_user">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="user_id" re="Location: http://.*/users/(.*)\r"/>
+          <http method='POST' url='/users' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=%%_user_name%%"></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="random_number" start="1"   end="4"  ><var name="company_id" /></setdynvars>
+      <setdynvars sourcetype="random_number" start="1"   end="10" ><var name="quantity" /></setdynvars>
+      <setdynvars sourcetype="random_number" start="100" end="300"><var name="price" /></setdynvars>
+
+      <thinktime value="1" random="true"></thinktime>
+      <transaction name="new_order">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <!-- <dyn_variable name="authenticity_token"/> Somehow it cannot be obtained-->
+          <dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+          <http url='/users/%%_user_id%%/orders/new'></http>
+        </request>
+      </transaction>
+
+      <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+        <var name="authenticity_token"/>
+      </setdynvars>
+
+      <thinktime value="4" random="true"></thinktime>
+      <transaction name="create_order">
+        <request subst="true">
+          <http
+            url='/users/%%_user_id%%/orders'
+            method='POST'
+            contents="authenticity_token=%%_authenticity_token%%&amp;order%5Bprice%5D=%%_price%%&amp;order%5Bcompany_id%5D=%%_company_id%%&amp;order%5Border_type%5D=2&amp;order%5Bquantity%5D=%%_quantity%%&amp;order%5Buser_id%5D=%%_user_id%%">
+          </http>
+        </request>
+      </transaction>
+    </session>
+  </sessions>
+</tsung>

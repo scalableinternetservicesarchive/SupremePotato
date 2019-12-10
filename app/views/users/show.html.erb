@@ -80,6 +80,7 @@
       <th>ID</th>
       <th>Buyer</th>
       <th>Seller</th>
+      <th>Quantity</th>
       <th>Price</th>
       <th>Company</th>
       <th>Updated At</th>
@@ -92,6 +93,7 @@
         <td><%= trade.id %></td>
         <td><%= trade.cached_buy_order.cached_user_name %></td>
         <td><%= trade.cached_sell_order.cached_user_name %></td>
+        <td><%= trade.quantity %></td>
         <td>$<%= number_to_currency(trade.price, delimiter: '', unit: '') %></td>
         <td><%= trade.company.name %></td>
         <td><%= trade.updated_at %></td>

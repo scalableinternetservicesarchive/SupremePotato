@@ -14,12 +14,12 @@ companies_list = [
 Company.delete_all
 Deposit.delete_all
 Holding.delete_all
-Order.delete_all 
+Order.delete_all
 Trade.delete_all
 User.delete_all
 
 #If the deployment is a new instance, occupies the first four ids!
-#Must use xxx.create function here instad of hard-code id!!! 
+#Must use xxx.create function here instad of hard-code id!!!
 4.times { |i|
   ceo = User.create(
     name:    i.to_s + "-CEO",
@@ -43,24 +43,22 @@ companies_list.each do |id, name, ticker, shares, price|
     name:    name + "-CEO",
     balance: 1000000,
   )
-  ceo.id = id 
+  ceo.id = id
   ceo.save!
 
-  #Crate User holdinng entries
+  #Create User holding entries
   holdings = Holding.create(
     user_id:    ceo.id,
     company_id: id,
     quantity:   shares,
   )
 
-  #Create #shares number of sales orders (because each order only allow one share atm)
-  shares.times {
-    Order.create(
-      price:      price,
-      company_id: id,
-      user_id:    ceo.id,
-      status:     Order::PENDING,
-      order_type: Order::SELL,
-    )
-  }
+  Order.create(
+    user_id:    ceo.id,
+    company_id: id,
+    quantity:   shares,
+    price:      price,
+    order_type: Order::SELL,
+    status:     Order::PENDING
+  )
 end
