@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
   end
 
   def create
-    #ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
       @order = Order.new(order_params)
       @order.status = Order::PENDING
       @order.save!
@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
         match = @order.matches.first
         Trade.match!(match, @order, match.price) if match
       end # order-type if/end
-    #end # transaction
+    end # transaction
 
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
