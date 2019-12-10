@@ -12,21 +12,30 @@ class OrdersController < ApplicationController
   end
 
   def create
-    @order = Order.new(order_params)
-    @order.status = Order::PENDING
-    @order.save!
-
-    match = @order.matches.first
-
     ActiveRecord::Base.transaction do
+      @order = Order.new(order_params)
+      @order.status = Order::PENDING
+      @order.save!
+
+      match = @order.matches.first
+      
+      if match
+        match_user = User.lock(true).find(match.user_id)
+      end
+
+      buy_user = User.lock(true).find(order_params[:user_id])
+
       if @order.order_type == Order::BUY
         # Withhold balance
         #use save! here to validate user's balance!
-        @order.user.balance -= @order.price
-        @order.user.save!
+        #@order.user.lock(true)
+        #@order.user.balance -= @order.price
+        #@order.user.save!
+        buy_user.balance -= @order.price
+        buy_user.save!
 
         #match = @order.matches.first
-        Trade.match!(@order, match, match.price) if match
+        Trade.match!(@order, match, match.price, buy_user, match_user) if match
       else # Sell Order
         # Check Seller Holding Quantity!
         seller_holding = Holding.where(
@@ -39,13 +48,13 @@ class OrdersController < ApplicationController
         end
 
         #match = @order.matches.first
-        Trade.match!(match, @order, match.price) if match
+        Trade.match!(match, @order, match.price, match_user, buy_user) if match
       end # order-type if/end
     end # transaction
 
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex
-    #Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
+    Rails.logger.info '<<<MANUAL-LOG>>>: ' + ex.message
     @order.errors[:balance] << ex.message
     render :new
   end
