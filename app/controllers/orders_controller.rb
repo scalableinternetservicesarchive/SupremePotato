@@ -17,14 +17,16 @@ class OrdersController < ApplicationController
       @order.status = Order::PENDING
       @order.save!
 
+      @match = @order.matches.first
+
       if @order.order_type == Order::BUY
         # Withhold balance
         #use save! here to validate user's balance!
         @order.user.balance -= @order.price
         @order.user.save!
 
-        match = @order.matches.first
-        Trade.match!(@order, match, match.price) if match
+        #match = @order.matches.first
+        #Trade.match!(@order, match, match.price) if match
       else # Sell Order
         # Check Seller Holding Quantity!
         seller_holding = Holding.where(
@@ -36,10 +38,20 @@ class OrdersController < ApplicationController
           raise 'Invalid Holding Quantity To Create SELL Order.'
         end
 
-        match = @order.matches.first
-        Trade.match!(match, @order, match.price) if match
+        #match = @order.matches.first
+        #Trade.match!(match, @order, match.price) if match
       end # order-type if/end
     end # transaction
+
+    ActiveRecord::Base.transaction do
+      if @match
+        if @order.order_type == Order::BUY
+          Trade.match!(@order, @match, @match.price)
+        else 
+          Trade.match!(@match, @order, @match.price)
+        end
+      end
+    end 
 
     redirect_to @order, notice: 'Order was successfully created.'
   rescue Exception => ex

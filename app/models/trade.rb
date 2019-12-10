@@ -9,12 +9,12 @@ class Trade < ApplicationRecord
     #  company_id: buy.company_id
     #).first_or_create.increment!(:quantity, 1)
     Holding.find_or_create_by(
-      user_id:    buy.user_id,
+      user:    buy.user,
       company_id: buy.company_id
     ).increment!(:quantity, 1)
 
     Holding.where(
-      user_id:    sell.user_id,
+      user:    sell.user,
       company_id: sell.company_id,
     ).first.decrement!(:quantity, 1)
 
