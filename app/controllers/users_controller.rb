@@ -23,7 +23,12 @@ class UsersController < ApplicationController
     @profit_history = @trades.sort_by(&:created_at).map do |x|
       if x.sell_order.user_id == @user.id
         queue = queues[x.company.id]
-        average_cost = queue.sum(&:price) / queue.length
+        average_cost = 0
+        if queue.length > 0
+          average_cost = queue.sum(&:price) / queue.length
+        else 
+          average_cost = 0
+        end
         queue.shift
         profit += x.price - average_cost
       else

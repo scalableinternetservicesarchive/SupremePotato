@@ -11,6 +11,16 @@
 </p>
 
 <p>
+  <strong>Req. Quantity:</strong>
+  <%= @order.quantity %>
+</p>
+
+<p>
+  <strong>Req. Total Price:</strong>
+  $<%= number_to_currency(@order.price * @order.quantity, delimiter: '', unit: '') %>
+</p>
+
+<p>
   <strong>Company:</strong>
   <%= @order.company.name %>
 </p>
@@ -25,4 +35,4 @@
   <%= @order.status_name %>
 </p>
 
-<%= link_to 'Back', orders_path %>
+<%= link_to 'Back', user_orders_path(current_user.id) %>
