@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_21_001917) do
+ActiveRecord::Schema.define(version: 2019_12_10_020551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2019_11_21_001917) do
     t.decimal "amount", precision: 12, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_deposits_on_user_id"
   end
 
   create_table "holdings", force: :cascade do |t|
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(version: 2019_11_21_001917) do
     t.integer "quantity", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "company_id"], name: "index_holdings_on_user_id_and_company_id"
     t.index ["user_id"], name: "index_holdings_on_user_id"
   end
 
@@ -48,6 +50,9 @@ ActiveRecord::Schema.define(version: 2019_11_21_001917) do
     t.datetime "updated_at", null: false
     t.integer "order_type"
     t.index ["company_id"], name: "index_orders_on_company_id"
+    t.index ["order_type", "company_id", "status"], name: "index_orders_on_order_type_and_company_id_and_status"
+    t.index ["order_type"], name: "index_orders_on_order_type"
+    t.index ["status"], name: "index_orders_on_status"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

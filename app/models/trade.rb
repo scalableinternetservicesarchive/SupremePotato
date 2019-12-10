@@ -4,10 +4,14 @@ class Trade < ApplicationRecord
   belongs_to :company
 
   def self.match!(buy, sell, price)
-    Holding.where(
+    #Holding.where(
+    #  user_id:    buy.user_id,
+    #  company_id: buy.company_id
+    #).first_or_create.increment!(:quantity, 1)
+    Holding.find_or_create_by(
       user_id:    buy.user_id,
       company_id: buy.company_id
-    ).first_or_create.increment!(:quantity, 1)
+    ).increment!(:quantity, 1)
 
     Holding.where(
       user_id:    sell.user_id,
