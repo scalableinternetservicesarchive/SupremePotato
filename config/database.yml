@@ -4,7 +4,7 @@ default: &default
   host: db
   username: postgres
   password:
-  pool: 25
+  pool: <%= ENV['RAILS_MAX_THREADS'] || 25 %>
 
 development:
   <<: *default
