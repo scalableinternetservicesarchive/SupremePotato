@@ -11,11 +11,11 @@ companies_list = [
 ]
 
 #Erase all entries everytime before Seeding!
+Trade.delete_all
+Order.delete_all
+Holding.delete_all
 Company.delete_all
 Deposit.delete_all
-Holding.delete_all
-Order.delete_all
-Trade.delete_all
 User.delete_all
 
 #If the deployment is a new instance, occupies the first four ids!
@@ -57,6 +57,7 @@ companies_list.each do |id, name, ticker, shares, price|
     user_id:    ceo.id,
     company_id: id,
     quantity:   shares,
+    initial:    shares,
     price:      price,
     order_type: Order::SELL,
     status:     Order::PENDING

@@ -12,12 +12,12 @@
 
 <p>
   <strong>Req. Quantity:</strong>
-  <%= @order.quantity %>
+  <%= @order.initial %>
 </p>
 
 <p>
   <strong>Req. Total Price:</strong>
-  $<%= number_to_currency(@order.price * @order.quantity, delimiter: '', unit: '') %>
+  $<%= number_to_currency(@order.price * (@order.initial || 0), delimiter: '', unit: '') %>
 </p>
 
 <p>

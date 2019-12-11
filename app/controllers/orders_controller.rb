@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       @order = Order.new(order_params)
+      @order.initial = @order.quantity
       @order.status = Order::PENDING
       @order.user = current_user
       @order.save!
