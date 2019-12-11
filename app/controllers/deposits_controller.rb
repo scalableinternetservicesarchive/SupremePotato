@@ -9,13 +9,24 @@ class DepositsController < ApplicationController
   end
 
   def create
-    @deposit = Deposit.new(deposit_params)
-    @deposit.user_id = params[:user_id] # set user_id since can't be provided
-    @deposit.user.balance += @deposit.amount
-    if @deposit.save && @deposit.user.save
-      redirect_to @deposit.user, notice: 'Transfer was successful!' and return
+
+    ActiveRecord::Base.transaction do
+      @deposit = Deposit.new(deposit_params)
+      @deposit.user_id = params[:user_id] # set user_id since can't be provided
+      @deposit.user.lock!
+      @deposit.user.balance += @deposit.amount
+
+      @deposit.save!
+      @deposit.user.save!
     end
+      redirect_to @deposit.user, notice: 'Transfer was successful!' and return
+  rescue Exception => ex
     render :new
+  #end
+    #if @deposit.save && @deposit.user.save
+    #  redirect_to @deposit.user, notice: 'Transfer was successful!' and return
+    #end
+    
   end
 
   private
