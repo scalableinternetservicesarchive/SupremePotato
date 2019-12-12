@@ -12,6 +12,9 @@ class UsersController < ApplicationController
     @trades = Trade.joins([:buy_order, :sell_order]).where(
       'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
     ).order('trades.id DESC').paginate(:page => params[:page], :per_page => 15)
+    @trades_for_compute = Trade.joins([:buy_order, :sell_order]).where(
+      'orders.user_id = ? OR sell_orders_trades.user_id = ?', params[:id], params[:id]
+    ).order('trades.id DESC')
 
     deposits = Deposit.where(user_id: params[:user_id])
 
@@ -20,7 +23,7 @@ class UsersController < ApplicationController
       queues[x.id] = []
     end
     profit = 0
-    @profit_history = @trades.sort_by(&:created_at).map do |x|
+    @profit_history = @trades_for_compute.sort_by(&:created_at).map do |x|
       if x.sell_order.user_id == @user.id
         queue = queues[x.company.id]
         average_cost = 0
