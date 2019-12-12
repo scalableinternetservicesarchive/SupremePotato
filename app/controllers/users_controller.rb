@@ -25,7 +25,7 @@ class UsersController < ApplicationController
         queue = queues[x.company.id]
         average_cost = 0
         if queue.length > 0
-          average_cost = queue.sum(&:price) / queue.length
+          average_cost = queue.sum{|t| t.price * t.quantity} / queue.sum(&:quantity)
         else 
           average_cost = 0
         end
