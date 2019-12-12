@@ -25,11 +25,11 @@
       </tr>
       <tr>
         <td>Price/Share</td>
-        <td><%= form.number_field :price, value: number_to_currency(form.object.price.to_f, delimiter: '', unit: ''), step: "0.01" %></td>
+        <td><%= form.number_field :price, value: number_to_currency(form.object.price.to_f, delimiter: '', unit: ''), step: "0.01", class: "center" %></td>
       </tr>
       <tr>
         <td>Quantity</td>
-        <td><%= form.number_field :quantity, value: form.object.quantity, step: "1" %></td>
+        <td><%= form.number_field :quantity, value: form.object.quantity, step: "1", class: "center" %></td>
       </tr>
     </tbody>
   </table>
